@@ -44,20 +44,22 @@
 4. Calculate the ratio of FONLL expectation (A vs. B) with our binning and related systematics
 
 * file location : /fonll/Code 
-* usage : root -l -b -q 'CompFONLL_BplusdsigmadptUnbinned+(1,0)';root -l -b -q 'CompFONLL_BplusdsigmadptUnbinned+(1,1)'
+* usage : root -l -b -q 'CompFONLL_BplusdsigmadptUnbinned.cc+(1,0,1,2)';root -l -b -q 'CompFONLL_BplusdsigmadptUnbinned.cc+(1,1,1,2)'
 * optional parameters 
   1. isBinned(default:0) : binned with our analysis binning(1) or with 1GeV fine binning(0)
-  2. isNorm(default:1) : normalized by central value(1) or central value itself(0) 
-* values to check!
+  2. isNorm(default:1) : normalized by central value(1) or central value itself(0)
+  3. What is numerator? : 5TeV(0), 7TeV(1), 2.76TeV(2) 
+  4. What is denominator? : 5TeV(0), 7TeV(1), 2.76TeV(2) 
+* values to check! - save as histogram in root file 
 
-  1. with (1,0) : central value 
+  1. CompFONLL_Bplus_Binned_Val_7TeVvs2760GeV.root - with (1,0) : central value 
 	**0.664924**+0.0171475-0.0126994 
 	**0.631362**+0.013487-0.0108966 
 	**0.60587**+0.0110387-0.00962627 
 	**0.585093**+0.00921929-0.00869071 
 	**0.55274**+0.00729316-0.00759625 
 
-  2. with (1,1) : check plus minus error
+  2. CompFONLL_Bplus_Binned_Norm_7TeVvs2760GeV.root - with (1,1) : check plus minus error
 	1+**0.0257887**-**0.019099**
 	1+**0.0213618**-**0.0172589**
 	1+**0.0182195**-**0.0158883**
