@@ -16,25 +16,11 @@
 
 * resulted file and values
 
-2. Fit on pp data with their binning with power law function
+2. Fit on pp data with their binning with power law function reweighting center of bin and combining CMS+ATLAS data
 
 * file location : /fonll/Code 
 * usage : root -l -b -q ScaleCor_pt.C+ 
-* parameters to check!
-
-*** Fitting with 7TeV pp ATLAS  
-  NO.   NAME      VALUE             
-   1  p0           3.68067e+00  
-   2  p1           3.80198e-01   
-   3  p2          -3.76518e-02  
-   4  p3          -1.01557e+00 
-
-*** Fitting with 7TeV pp CMS 
-  NO.   NAME      VALUE         
-   1  p0           4.00284e+00  
-   2  p1           4.62641e-01  
-   3  p2          -2.42728e-02  
-   4  p3          -2.36722e+00  
+* fitting parameters are stored in histogram
 
 3. With fitting function, get the pp data with our binning
 
