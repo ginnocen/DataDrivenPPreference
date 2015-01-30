@@ -23,9 +23,10 @@ void GetBinned_w2760GeVpp(int codeNum, int codeDen)
 	gStyle->SetPadRightMargin(0.045);
 
 	//TFile* fin_FONLL=new TFile("../ResultsBplus_pp/dSigmadpt_FONLL.root");
+	//TFile* fin_FONLL=new TFile("../ResultsBplus/dSigmadpt_FONLL_pp2760GeV.root");
 	TFile* fin_FONLL=new TFile("../ResultsBplus_2760GeVpp/dSigmadpt_Bplus_2760GeVpp.root");
 
-  	TGraphAsymmErrors* gaeDatastat = (TGraphAsymmErrors*)fin_FONLL->Get("gSigmastat");
+  TGraphAsymmErrors* gaeDatastat = (TGraphAsymmErrors*)fin_FONLL->Get("gSigmastat");
 	TGraphAsymmErrors* gaeDatasyst = (TGraphAsymmErrors*)fin_FONLL->Get("gSigmasyst");
 
 	std::string codeName[3]={"5TeV","7TeV","2760GeV"};
@@ -68,6 +69,10 @@ void GetBinned_w2760GeVpp(int codeNum, int codeDen)
 
 	double apt[6],aptl[6],asigma[6],aerrorh[6],aerrorl[6];
 
+  double asigmaNoSca[6];
+  double aerrorhStat[6],aerrorlStat[6];
+  double aerrorhSyst[6],aerrorlSyst[6];
+
 	//double selerr = 0.192;//sqrt(0.167^2+0.095^2)
   //double selerr;
   double selerrl, selerrh;
@@ -79,13 +84,32 @@ void GetBinned_w2760GeVpp(int codeNum, int codeDen)
 		aptl[i] = (ptbin[i+1]-ptbin[i])/2;//half bin width
 
 		asigma[i] = gaeDatastat->GetY()[i]*scalefac[i+1];
+
+    asigmaNoSca[i] = gaeDatastat->GetY()[i];
+    aerrorhStat[i] = gaeDatastat->GetEYhigh()[i];
+    aerrorlStat[i] = gaeDatastat->GetEYlow()[i];
+    aerrorhSyst[i] = gaeDatasyst->GetEYhigh()[i];
+    aerrorlSyst[i] = gaeDatasyst->GetEYlow()[i];
+
 		selerrl = sqrt(pow(gaeDatastat->GetEYlow()[i]/gaeDatastat->GetY()[i],2)+pow(gaeDatasyst->GetEYlow()[i]/gaeDatasyst->GetY()[i],2));//recalculated errorPerc from pp data, not times A
 		selerrh = sqrt(pow(gaeDatastat->GetEYhigh()[i]/gaeDatastat->GetY()[i],2)+pow(gaeDatasyst->GetEYhigh()[i]/gaeDatasyst->GetY()[i],2));//recalculated errorPerc from pp data, not times A
 		aerrorl[i] = sqrt(pow(scalefac_mierr[i+1],2)+pow(selerrl,2))*(asigma[i]);
 		aerrorh[i] = sqrt(pow(scalefac_plerr[i+1],2)+pow(selerrh,2))*(asigma[i]);
 	}
+/*
 	TGraphAsymmErrors* gaeEstimatedpp5TeV = new TGraphAsymmErrors(6,apt,asigma,aptl,aptl,aerrorl,aerrorh);
 	gaeEstimatedpp5TeV->SetName("gaeEstimatedpp5TeV");
+  TGraphAsymmErrors* gaeStatNoSca2760GeV = new TGraphAsymmErrors(6,apt,asigmaNoSca,aptl,aptl,aerrorlStat,aerrorhStat);
+  gaeStatNoSca2760GeV->SetName("gaeStatNoSca2760GeV");
+  TGraphAsymmErrors* gaeSystNoSca2760GeV = new TGraphAsymmErrors(6,apt,asigmaNoSca,aptl,aptl,aerrorlSyst,aerrorhSyst);
+  gaeSystNoSca2760GeV->SetName("gaeSystNoSca2760GeV");
+*/
+	TGraphAsymmErrors* gaeEstimatedpp5TeV = new TGraphAsymmErrors(5,apt,asigma,aptl,aptl,aerrorl,aerrorh);
+	gaeEstimatedpp5TeV->SetName("gaeEstimatedpp5TeV");
+  TGraphAsymmErrors* gaeStatNoSca2760GeV = new TGraphAsymmErrors(5,apt,asigmaNoSca,aptl,aptl,aerrorlStat,aerrorhStat);
+  gaeStatNoSca2760GeV->SetName("gaeStatNoSca2760GeV");
+  TGraphAsymmErrors* gaeSystNoSca2760GeV = new TGraphAsymmErrors(5,apt,asigmaNoSca,aptl,aptl,aerrorlSyst,aerrorhSyst);
+  gaeSystNoSca2760GeV->SetName("gaeSystNoSca2760GeV");
 
 	TCanvas *c1 = new TCanvas("c1","",500,500);
 	c1->SetLogy(1);
@@ -136,6 +160,8 @@ void GetBinned_w2760GeVpp(int codeNum, int codeDen)
 
 	fout->cd(); 
 	gaeEstimatedpp5TeV->Write();
+  gaeStatNoSca2760GeV->Write();
+  gaeSystNoSca2760GeV->Write();
 	fout->Write();
 }
 

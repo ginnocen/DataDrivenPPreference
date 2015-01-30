@@ -111,7 +111,7 @@ void CalcErr_7TeV() {
 	sigmapt_sys_pPb[5]=((sigmapt_sys[4]/sigmapt[4])-(sigmapt_sys[3]/sigmapt[3]))/(stminpt_pPb[4]-stminpt_pPb[3])*(stminpt_pPb[5]-stminpt_pPb[3])+(sigmapt_sys[3]/sigmapt[3]);//30,60 rough estimation
 
   TH1D* hstaerrPerc = new TH1D("hstaerrPrec","",NUM_pPb,ptbin_pPb);
-  TH1D* hsyserrPerc = new TH1D("hstaerrPrec","",NUM_pPb,ptbin_pPb);
+  TH1D* hsyserrPerc = new TH1D("hsyserrPrec","",NUM_pPb,ptbin_pPb);
   TH1D* hWgtcen = new TH1D("hWgtcen","",NUM_pPb,ptbin_pPb);
 
 	for (int i=0;i<NUM_pPb;i++) {

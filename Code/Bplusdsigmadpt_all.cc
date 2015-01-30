@@ -45,7 +45,8 @@ void Bplusdsigmadpt_all(int option=5, bool isBinned=true)
 	std::string isBinnedrmk;
 	int REBINn;
 
-	if (isBinned) {isBinnedrmk="Binned";REBINn=5;}
+	//if (isBinned) {isBinnedrmk="Binned";REBINn=5;}
+	if (isBinned) {isBinnedrmk="Binned";REBINn=6;}
 	else {isBinnedrmk="Unbinned";REBINn=REBIN;}
 
 	std::string tlatexrem;

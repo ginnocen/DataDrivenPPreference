@@ -70,6 +70,10 @@ void GetBinned (int codeNum, int codeDen)
 
 	double apt[6],aptl[6],asigma[6],aerrorh[6],aerrorl[6];
 
+	double asigmaNoSca[6];
+	double aerrorhStat[6],aerrorlStat[6];
+	double aerrorhSyst[6],aerrorlSyst[6];
+
 	//double selerr = 0.192;//sqrt(0.167^2+0.095^2)
 	double selerr;
 
@@ -81,7 +85,7 @@ void GetBinned (int codeNum, int codeDen)
 
 	TFile* fin_ErrPer = new TFile(Form("../ResultsBplus/CalcErrPerc_%s.root",codeName[codeDen].c_str()));
 	TH1D* hstaerrPerc = (TH1D*)fin_ErrPer->Get("hstaerrPrec");
-	TH1D* hsyserrPerc = (TH1D*)fin_ErrPer->Get("hstaerrPrec");
+	TH1D* hsyserrPerc = (TH1D*)fin_ErrPer->Get("hsyserrPrec");
 	TH1D* hWgtcen = (TH1D*)fin_ErrPer->Get("hWgtcen");
 
 	for (int i=0;i<6;i++) {
@@ -99,9 +103,15 @@ void GetBinned (int codeNum, int codeDen)
 		apth_wgt[i] = ptbin[i+1]-apt_wgt[i];//right bin width
 
 		asigma[i] = (fitft->Integral(ptbin[i],ptbin[i+1]))/(ptbin[i+1]-ptbin[i]);//recalculated y, not times A
+		asigmaNoSca[i] = (fitft->Integral(ptbin[i],ptbin[i+1]))/(ptbin[i+1]-ptbin[i]);//recalculated y, not times A
+		aerrorhStat[i] = asigmaNoSca[i]*eststa_befA[i];
+		aerrorlStat[i] = asigmaNoSca[i]*eststa_befA[i];
+		aerrorhSyst[i] = asigmaNoSca[i]*estsys_befA[i];
+		aerrorlSyst[i] = asigmaNoSca[i]*estsys_befA[i];
+
 		std :: cout << "# " << i << " : " << asigma[i] << std::endl;
 		selerr = sqrt(pow(eststa_befA[i],2)+pow(estsys_befA[i],2));//recalculated errorPerc from pp data, not times A
-		std :: cout << std::string(10,'-') << " error from data " << selerr << std::endl;
+		std :: cout << std::string(10,'-') << " error from data - stat. : " << eststa_befA[i] << " , syst. : " << estsys_befA[i] << "total : " << selerr << std::endl;
 
 		asigma[i] = (fitft->Integral(ptbin[i],ptbin[i+1]))/(ptbin[i+1]-ptbin[i])*scalefac[i];//scaled for 2.76TeV
 		aerrorh[i] = sqrt(pow(scalefac_plerr[i],2)+pow(selerr,2))*(asigma[i]);
@@ -111,6 +121,14 @@ void GetBinned (int codeNum, int codeDen)
 	}
 	TGraphAsymmErrors* gaeEstimatedpp5TeV = new TGraphAsymmErrors(6,apt,asigma,aptl,aptl,aerrorl,aerrorh);
 	gaeEstimatedpp5TeV->SetName("gaeEstimatedpp5TeV");
+
+	TGraphAsymmErrors* gaeStatNoSca7TeV = new TGraphAsymmErrors(6,apt,asigmaNoSca,aptl,aptl,aerrorlStat,aerrorhStat);
+	gaeStatNoSca7TeV->SetName("gaeStatNoSca7TeV");
+	TGraphAsymmErrors* gaeSystNoSca7TeV = new TGraphAsymmErrors(6,apt,asigmaNoSca,aptl,aptl,aerrorlSyst,aerrorhSyst);
+	gaeSystNoSca7TeV->SetName("gaeSystNoSca7TeV");
+
+
+
 
 	TGraphAsymmErrors* gaeEstimatedpp5TeV_wgt = new TGraphAsymmErrors(6,apt_wgt,asigma,aptl_wgt,apth_wgt,aerrorl,aerrorh);
 	gaeEstimatedpp5TeV_wgt->SetName("gaeEstimatedpp5TeV_wgt");
@@ -276,6 +294,8 @@ void GetBinned (int codeNum, int codeDen)
 	hsigmapt_ORI->Write();
 	hsigmapt_Recal->Write();
 	hsigmapt_Comp->Write();
+	gaeStatNoSca7TeV->Write();
+	gaeSystNoSca7TeV->Write();
 	fout->Write();
 }
 
