@@ -5,8 +5,10 @@
 ### **QUICK SERVICE** : Just run ./auto_refstudy_Bplus.sh 
 After running, you can get the results for the case of 
 
-(1). 5TeV pPb results (with pure FONLL and data-driven FONLL with 7 TeV pp data) 
-(2). 2.76TeV pp results (with pure FONLL and data-driven FONLL) 
+(1). 5TeV pPb results (with pure FONLL and data-driven FONLL with 7 TeV pp data)
+
+(2). 2.76TeV pp results (with pure FONLL and data-driven FONLL)
+ 
 (3). 5TeV pPb results (with pure FONLL and data-driven FONLL with 2.76 TeV pp data) 
  
 ### **DETAILED INSTRUCTION**
@@ -20,8 +22,8 @@ After running, you can get the results for the case of
 
 * usage : root -l -b -q 'Bplusdsigmadpt_all.cc+(5)' 
 * optional parameters 
-	1. beam energy : 5(5TeV), 7(7TeV), 2(2.76TeV) 
-  2. is it with analysis binning or not(bin width : 1GeV) : true(analysis binned), false(fine binned) 
+  1. beam energy : 5(5TeV), 7(7TeV), 2(2.76TeV) 
+  2. is it with analysis binning or not(bin width : 1GeV) : true(analysis binned), false(fine binned)
 * resulted file 
 	* ../ResultsBplus/outputBplus_Unbinned(Binned)_5TeV(7TeV, 2760GeV).root
 
@@ -40,10 +42,12 @@ After running, you can get the results for the case of
 * example in stored information in root file
   1. CompFONLL_Bplus_Binned_Val_7TeVvs2760GeV.root - with (1,0) : central value 
 	**0.664924**+0.0171475-0.0126994 
+
 	**0.631362**+0.013487-0.0108966 
 
   2. CompFONLL_Bplus_Binned_Norm_7TeVvs2760GeV.root - with (1,1) : check plus minus error 
 	1+**0.0257887**-**0.019099** 
+
 	1+**0.0213618**-**0.0172589** 
 
 3. Fit on pp data with their binning with power law function reweighting center of bin and combining CMS+ATLAS data
