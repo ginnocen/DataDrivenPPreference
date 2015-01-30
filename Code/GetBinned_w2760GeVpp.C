@@ -23,9 +23,9 @@ void GetBinned_w2760GeVpp(int codeNum, int codeDen)
 	gStyle->SetPadRightMargin(0.045);
 
 	//TFile* fin_FONLL=new TFile("../ResultsBplus_pp/dSigmadpt_FONLL.root");
-	TFile* fin_FONLL=new TFile("../ResultsBplus/dSigmadpt_FONLL_pp2760GeV.root");
+	TFile* fin_FONLL=new TFile("../ResultsBplus_2760GeVpp/dSigmadpt_Bplus_2760GeVpp.root");
 
-  TGraphAsymmErrors* gaeDatastat = (TGraphAsymmErrors*)fin_FONLL->Get("gSigmastat");
+  	TGraphAsymmErrors* gaeDatastat = (TGraphAsymmErrors*)fin_FONLL->Get("gSigmastat");
 	TGraphAsymmErrors* gaeDatasyst = (TGraphAsymmErrors*)fin_FONLL->Get("gSigmasyst");
 
 	std::string codeName[3]={"5TeV","7TeV","2760GeV"};
