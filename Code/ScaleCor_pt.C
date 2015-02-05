@@ -50,7 +50,7 @@ void iterpoints(int i, double oribin[], TF1* f, double stmpt[], double iterorder
 
 void iterpoints_COM(int i, double lowv, double highv, TF1* f, double stmpt[], double iterorder)
 {
-	// iterpoints_COM(i, ptbin_COM_l, ptbin_COM_h, fitft_opt7, stminpt_COM2, 0);
+	// iterpoints_COM(i, ptbin_COM_l, ptbin_COM_h, fitft_opt5, stminpt_COM2, 0);
 	double integ1,integ2,gapinteg,minpt;
 	double mininteg=1000000000000000.0;
 	double initval = pow(10,iterorder*(-1));
@@ -132,12 +132,6 @@ void ScaleCor_pt()
 	fitft_opt1->SetLineColor(kRed);
 	TF1* fitft_opt2 = new TF1("fitft_opt2","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
 	fitft_opt2->SetLineColor(kAzure-6);
-	TF1* fitft_opt3 = new TF1("fitft_opt3","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
-	fitft_opt3->SetLineColor(kOrange);
-	fitft_opt3->SetLineStyle(2);
-	TF1* fitft_opt4 = new TF1("fitft_opt4","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
-	fitft_opt4->SetLineColor(kGreen);
-	fitft_opt4->SetLineStyle(2);
 
 	// parameter limits
 	fitft_opt1->SetParLimits(1,-0.025,-0.015);
@@ -149,19 +143,6 @@ void ScaleCor_pt()
 	std::cout << "(2) Fit with ATLAS data" << std::endl;
 	hsigmapt_staerr_ATL->Fit("fitft_opt2","M","",0.0,120.0);
 
-	fitft_opt4->SetParameter(0,fitft_opt1->GetParameter(0));
-	fitft_opt4->SetParameter(1,fitft_opt1->GetParameter(1));
-	fitft_opt4->SetParameter(2,fitft_opt1->GetParameter(2));
-
-	fitft_opt3->SetParameter(0,fitft_opt2->GetParameter(0));
-	fitft_opt3->SetParameter(1,fitft_opt2->GetParameter(1));
-	fitft_opt3->SetParameter(2,fitft_opt2->GetParameter(2));
-
-	std::cout << "(3) Fit with CMS data based on (2)" << std::endl;
-	hsigmapt_staerr->Fit("fitft_opt3","M","",0.0,120.0);
-	std::cout << "(4) Fit with ATLAS data based on (1)" << std::endl;
-	hsigmapt_staerr_ATL->Fit("fitft_opt4","M","",0.0,120.0);
-
 	std::cout << std::endl;
 
 	double stminpt[NUM];
@@ -172,9 +153,9 @@ void ScaleCor_pt()
 	std::cout << std::string(50,'#') << std::endl; 
 	for (int i=0;i<NUM;i++){
 		std::cout << i << " : " << ", central point : " << (ptbin[i+1]+ptbin[i])/2 << std::endl;
-		iterpoints(i, ptbin, fitft_opt4, stminpt, 0);
-		iterpoints(i, ptbin, fitft_opt4, stminpt, 1);
-		iterpoints(i, ptbin, fitft_opt4, stminpt, 2);
+		iterpoints(i, ptbin, fitft_opt1, stminpt, 0);
+		iterpoints(i, ptbin, fitft_opt1, stminpt, 1);
+		iterpoints(i, ptbin, fitft_opt1, stminpt, 2);
 		sty[i]=hsigmapt_noerr->GetBinContent(i+1);
 		stexl[i]=stminpt[i]-ptbin[i];
 		stexh[i]=ptbin[i+1]-stminpt[i];
@@ -195,9 +176,9 @@ void ScaleCor_pt()
 	std::cout << std::string(50,'#') << std::endl; 
 	for (int i=0;i<NUM_ATL;i++){
 		std::cout << i << " : " << ", central point : " << (ptbin_ATL[i+1]+ptbin_ATL[i])/2 << std::endl;
-		iterpoints(i, ptbin_ATL, fitft_opt4, stminpt_ATL, 0);
-		iterpoints(i, ptbin_ATL, fitft_opt4, stminpt_ATL, 1);
-		iterpoints(i, ptbin_ATL, fitft_opt4, stminpt_ATL, 2);
+		iterpoints(i, ptbin_ATL, fitft_opt2, stminpt_ATL, 0);
+		iterpoints(i, ptbin_ATL, fitft_opt2, stminpt_ATL, 1);
+		iterpoints(i, ptbin_ATL, fitft_opt2, stminpt_ATL, 2);
 		sty_ATL[i]=hsigmapt_noerr_ATL->GetBinContent(i+1);
 		stexl_ATL[i]=stminpt_ATL[i]-ptbin_ATL[i];
 		stexh_ATL[i]=ptbin_ATL[i+1]-stminpt_ATL[i];
@@ -252,75 +233,49 @@ void ScaleCor_pt()
 	gaeCOMsta->SetName("gaeCOMsta");
 	gaeCOMsys->SetName("gaeCOMsys");
 
-
-
-
-
-	////////////////
+	TF1* fitft_opt3 = new TF1("fitft_opt3","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
+	TF1* fitft_opt4 = new TF1("fitft_opt4","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
 	TF1* fitft_opt5 = new TF1("fitft_opt5","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
-	TF1* fitft_opt6 = new TF1("fitft_opt6","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
-	TF1* fitft_opt7 = new TF1("fitft_opt7","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
-	//###TF1* fitft_opt7 = new TF1("fitft_opt7","pow(10,[0]+[1]*x+[2]*x*x)",0.0,120.0);
+	
+	fitft_opt3->SetParLimits(0,5.0,7.0);
+	fitft_opt3->SetParLimits(1,-0.025,-0.015);
 
+	fitft_opt4->SetParameter(0,fitft_opt2->GetParameter(0));
+	fitft_opt4->SetParameter(1,fitft_opt2->GetParameter(1));
+	fitft_opt4->SetParameter(2,fitft_opt2->GetParameter(2));
 
+	fitft_opt3->SetLineColor(kOrange+7);
+	fitft_opt3->SetLineStyle(1);
 
+	fitft_opt4->SetLineColor(kGreen+4);
+	fitft_opt4->SetLineStyle(1);
 
-	/*
-		 fitft_opt5->SetParameter(0,fitft_opt1->GetParameter(0));
-		 fitft_opt5->SetParameter(1,fitft_opt1->GetParameter(1));
-		 fitft_opt5->SetParameter(2,fitft_opt1->GetParameter(2));
-	//fitft_opt5->SetParameter(3,fitft_opt3->GetParameter(3));
-	 */
-	fitft_opt5->SetParLimits(0,5.0,7.0);
-	fitft_opt5->SetParLimits(1,-0.025,-0.015);
-
-
-
-	fitft_opt6->SetParameter(0,fitft_opt4->GetParameter(0));
-	fitft_opt6->SetParameter(1,fitft_opt4->GetParameter(1));
-	fitft_opt6->SetParameter(2,fitft_opt4->GetParameter(2));
-	//fitft_opt6->SetParameter(3,fitft_opt4->GetParameter(3));
-
-
-
-	fitft_opt5->SetLineColor(kOrange+7);
+	fitft_opt5->SetLineColor(kViolet+5);
 	fitft_opt5->SetLineStyle(1);
 
-	fitft_opt6->SetLineColor(kGreen+4);
-	fitft_opt6->SetLineStyle(1);
 
-	fitft_opt7->SetLineColor(kViolet+5);
-	fitft_opt7->SetLineStyle(1);
+	std::cout << "(3) Fit with CMS weighted data" << std::endl;
 
 
-	std::cout << "(5) Fit with CMS weighted data, based on (6)" << std::endl;
+	gaeCMSsta->Fit("fitft_opt3","M","",5.0,30.0);
 
 
-	gaeCMSsta->Fit("fitft_opt5","M","",5.0,30.0);
+	std::cout << "(4) Fit with ATLAS weighted " << std::endl;
+	gaeATLsta->Fit("fitft_opt4","M","",0.0,120.0);
 
+	fitft_opt5->SetParameter(0,fitft_opt3->GetParameter(0));
+	fitft_opt5->SetParameter(1,fitft_opt3->GetParameter(1));
+	fitft_opt5->SetParameter(2,fitft_opt3->GetParameter(2));
 
-	//std::cout << "(5) Fit with CMS weighted data based on (1)" << std::endl;
-	std::cout << "(6) Fit with ATLAS weighted data based on (5)" << std::endl;
-	gaeATLsta->Fit("fitft_opt6","M","",0.0,120.0);
+	fitft_opt5->SetParLimits(0,5.0,7.0);
+	fitft_opt5->SetParLimits(1,-0.100,-0.005);
 
-	fitft_opt7->SetParameter(0,fitft_opt5->GetParameter(0));
-	fitft_opt7->SetParameter(1,fitft_opt5->GetParameter(1));
-	fitft_opt7->SetParameter(2,fitft_opt5->GetParameter(2));
+	std::cout << "(5) Fit with CMS+ATLAS weighted data" << std::endl;
+	gaeCOMsta->Fit("fitft_opt5","M","",0.0,100.0);
 
-	//fitft_opt7->SetParameter(0,6.30625e+00);
-	//fitft_opt7->SetParameter(1,-2.41914e-02);
-
-	fitft_opt7->SetParLimits(0,5.0,7.0);
-	fitft_opt7->SetParLimits(1,-0.100,-0.005);
-
-
-
-	std::cout << "(7) Fit with CMS+ATLAS weighted data" << std::endl;
-	gaeCOMsta->Fit("fitft_opt7","M","",0.0,100.0);
-
-	hparafit->SetBinContent(1,fitft_opt7->GetParameter(0));
-	hparafit->SetBinContent(2,fitft_opt7->GetParameter(1));
-	hparafit->SetBinContent(3,fitft_opt7->GetParameter(2));
+	hparafit->SetBinContent(1,fitft_opt5->GetParameter(0));
+	hparafit->SetBinContent(2,fitft_opt5->GetParameter(1));
+	hparafit->SetBinContent(3,fitft_opt5->GetParameter(2));
 
 	double stminpt_COM2[NUM_COM];
 	double sty_COM2[NUM_COM],stexl_COM2[NUM_COM],stexh_COM2[NUM_COM];
@@ -333,9 +288,9 @@ void ScaleCor_pt()
 		std::cout << i << " : merged, weighted point : " << stminpt_COM[i] << std::endl;
 		double ptbin_COM_l=stminpt_COM[i]-stexl_COM[i];//low edge
 		double ptbin_COM_h=stminpt_COM[i]+stexh_COM[i];//high edge
-		iterpoints_COM(i, ptbin_COM_l, ptbin_COM_h, fitft_opt7, stminpt_COM2, 0);
-		iterpoints_COM(i, ptbin_COM_l, ptbin_COM_h, fitft_opt7, stminpt_COM2, 1);
-		iterpoints_COM(i, ptbin_COM_l, ptbin_COM_h, fitft_opt7, stminpt_COM2, 2);
+		iterpoints_COM(i, ptbin_COM_l, ptbin_COM_h, fitft_opt5, stminpt_COM2, 0);
+		iterpoints_COM(i, ptbin_COM_l, ptbin_COM_h, fitft_opt5, stminpt_COM2, 1);
+		iterpoints_COM(i, ptbin_COM_l, ptbin_COM_h, fitft_opt5, stminpt_COM2, 2);
 		sty_COM2[i]=sty_COM[i];
 		stexl_COM2[i]=stminpt_COM2[i]-stminpt_COM[i];
 		stexh_COM2[i]=stminpt_COM[i]-stminpt_COM2[i];
@@ -350,26 +305,6 @@ void ScaleCor_pt()
 	TGraphAsymmErrors* gaeCOMsys2 = new TGraphAsymmErrors(NUM_COM,stminpt_COM2,sty_COM2,stexl_COM2,stexh_COM2,steyl_sys_COM2,steyh_sys_COM2);
 	gaeCOMsta->SetName("gaeCOMsta2");
 	gaeCOMsys->SetName("gaeCOMsys2");
-
-
-
-
-
-
-	/*
-		 TF1* fitft_opt3 = new TF1("fitft_opt3","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
-		 fitft_opt3->SetLineColor(kOrange);
-		 fitft_opt3->SetLineStyle(2);
-		 TF1* fitft_opt4 = new TF1("fitft_opt4","pow(10,[0]*exp([1]*x)+[2])",0.0,120.0);
-		 std::cout << "(3) Fit with CMS data based on (2)" << std::endl;
-	//hsigmapt_staerr->Fit("fitft_opt3","L","",0.0,120.0);
-	hsigmapt_staerr->Fit("fitft_opt3","M","",0.0,60.0);
-
-	std::cout << "(4) Fit with ATLAS data based on (1)" << std::endl;
-	hsigmapt_staerr_ATL->Fit("fitft_opt4","M","",0.0,120.0);
-	 */
-
-
 
 	TCanvas *cSigma = new TCanvas("cSigma","",500,500);
 
@@ -428,9 +363,6 @@ void ScaleCor_pt()
 	hsigmapt_staerr_ATL->Draw("samee");
 	fitft_opt1->Draw("same");
 	fitft_opt2->Draw("same");
-	fitft_opt3->Draw("same");
-	fitft_opt4->Draw("same");
-
 
 	TLegend* leg = new TLegend(0.30,0.65,0.60,0.90,"");
 
@@ -467,13 +399,9 @@ void ScaleCor_pt()
 
 	leg->AddEntry(fitft_opt1,"(1) Fit with CMS data","l");
 	leg->AddEntry(fitft_opt2,"(2) Fit with ATLAS data","l");
-	leg->AddEntry(fitft_opt3,"(3) Fit with CMS data based on (2)","l");
-	leg->AddEntry(fitft_opt4,"(4) Fit with ATLAS data based on (1)","l");
-
-
 	leg->Draw("");
 
-	cSigma->SaveAs("../ResultsBplus/cSigma_CompFit.pdf");
+	cSigma->SaveAs("../ResultsBplus/FitPlots/cSigma_CompFit.pdf");
 	cSigma->Clear();
 	cSigma->SetFillColor(0);
 	cSigma->SetBorderMode(0);
@@ -573,16 +501,12 @@ void ScaleCor_pt()
 		 fitft_opt1->Draw("same");
 		 fitft_opt2->Draw("same");
 	 */
-	fitft_opt3->Draw("same");
-	fitft_opt4->Draw("same");
 	gaeCMSsta->Draw("samee2");
 	gaeATLsta->Draw("samee2");
 	gaeCMSsta->Draw("samep");
 	gaeATLsta->Draw("samep");
 	fitft_opt3->Draw("same");
 	fitft_opt4->Draw("same");
-	fitft_opt5->Draw("same");
-	fitft_opt6->Draw("same");
 
 	leg->Clear();
 	leg = new TLegend(0.30,0.55,0.60,0.90,"");
@@ -598,15 +522,13 @@ void ScaleCor_pt()
 	leg->AddEntry(hsigmapt_staerr_ATL,"ATLAS 7 TeV, |y|<2.25","lpf");
 	leg->AddEntry(gaeCMSsta,"Reweighted CMS 7 TeV, |y|<2.4","lpf");
 	leg->AddEntry(gaeATLsta,"Reweighted ATLAS 7 TeV, |y|<2.25","lpf");
-	leg->AddEntry(fitft_opt3,"(3) Fit with CMS data based on (2)","l");
-	leg->AddEntry(fitft_opt4,"(4) Fit with ATLAS data based on (1)","l");
-	leg->AddEntry(fitft_opt5,"(5) Fit with reweighted CMS data","l");
-	leg->AddEntry(fitft_opt6,"(6) Fit with reweighted ATLAS data","l");
+	leg->AddEntry(fitft_opt3,"Fit with reweighted CMS data","l");
+	leg->AddEntry(fitft_opt4,"Fit with reweighted ATLAS data","l");
 
 	leg->Draw("");
 
 
-	cSigma->SaveAs("../ResultsBplus/cSigma_CompReweightedFit.pdf");
+	cSigma->SaveAs("../ResultsBplus/FitPlots/cSigma_CompReweightedFit.pdf");
 
 	cSigma->Clear();
 	cSigma->SetFillColor(0);
@@ -656,27 +578,9 @@ void ScaleCor_pt()
 
 
 	hempty->Draw("");
-	/*
-		 hsigmapt_syserr->Draw("samee2");
-		 hsigmapt_syserr_ATL->Draw("samee2");
-		 hsigmapt_staerr->Draw("samee");
-		 hsigmapt_staerr_ATL->Draw("samee");
-	 */
-	/*
-		 fitft_opt1->Draw("same");
-		 fitft_opt2->Draw("same");
-
-		 fitft_opt3->Draw("same");
-		 fitft_opt4->Draw("same");
-
-		 gaeCMSsta->Draw("samep");
-		 gaeATLsta->Draw("samep");
-		 fitft_opt5->Draw("same");
-		 fitft_opt6->Draw("same");
-	 */
 	gaeCOMsys->Draw("samee2");
 	gaeCOMsta->Draw("samep");
-	fitft_opt7->Draw("same");
+	fitft_opt5->Draw("same");
 	gaeCOMsys2->Draw("samee2");
 	gaeCOMsta2->Draw("samep");
 	leg->Clear();
@@ -691,11 +595,11 @@ void ScaleCor_pt()
 
 
 	leg->AddEntry(gaeCOMsta,"Reweighted CMS+ATLAS 7 TeV data","lpf");
-	leg->AddEntry(gaeCOMsta2,"Twice reweighted CMS+ATLAS 7 TeV data","lpf");
-	leg->AddEntry(fitft_opt7,"(7) Fit with reweighted CMS+ATLAS data","l");
+	leg->AddEntry(gaeCOMsta2,"Reweighted CMS+ATLAS 7 TeV data","lpf");
+	leg->AddEntry(fitft_opt5,"Fit with reweighted CMS+ATLAS data","l");
 	leg->Draw("");
 
-	cSigma->SaveAs("../ResultsBplus/cSigma_CompCombinedFit.pdf");
+	cSigma->SaveAs("../ResultsBplus/FitPlots/cSigma_CompCombinedFit.pdf");
 
 	fout->cd();
 	hparafit->Write();
