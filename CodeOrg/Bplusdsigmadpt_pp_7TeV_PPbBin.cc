@@ -19,7 +19,7 @@ int Bplusdsigmadpt_pp_7TeV_PPbBin()
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
 
-  infile="../FONLLInputs/fo_pp_pt_rap24_7TeV.dat";
+  infile="../FONLLInputs/fo_Curve_pp_pt_rap24_7TeV.dat";
   outfile="Rootf/outputBplus_pp_pt_rap24_7TeV_PPbBin.root";
 
   ifstream getdata(infile.Data());
@@ -32,6 +32,8 @@ int Bplusdsigmadpt_pp_7TeV_PPbBin()
   float central[BIN_NUM];
   float min_all[BIN_NUM],max_all[BIN_NUM],min_sc[BIN_NUM],max_sc[BIN_NUM],min_mass[BIN_NUM],max_mass[BIN_NUM];
   float min_pdf[BIN_NUM],max_pdf[BIN_NUM];
+  float fr_05_05[BIN_NUM],fr_20_20[BIN_NUM],fr_20_10[BIN_NUM],fr_10_20[BIN_NUM],fr_10_05[BIN_NUM],fr_05_10[BIN_NUM];
+
   int i;
   float tem;
   for(i=0;i<BIN_NUM;i++)
@@ -44,8 +46,15 @@ int Bplusdsigmadpt_pp_7TeV_PPbBin()
       getdata>>max_sc[i];
       getdata>>min_mass[i];
       getdata>>max_mass[i];
-      getdata>>min_pdf[i];
-      getdata>>max_pdf[i];
+	  getdata>>min_pdf[i];
+	  getdata>>max_pdf[i];
+	  getdata>>fr_05_05[i];
+	  getdata>>fr_20_20[i];
+	  getdata>>fr_20_10[i];
+	  getdata>>fr_10_20[i];
+	  getdata>>fr_10_05[i];
+	  getdata>>fr_05_10[i];
+
     }
   
   TH1F* hpt = new TH1F("hpt","",BIN_NUM,HMIN,HMAX);
@@ -57,6 +66,13 @@ int Bplusdsigmadpt_pp_7TeV_PPbBin()
   TH1F* hmaxmass = new TH1F("hmaxmass","",BIN_NUM,HMIN,HMAX);
   TH1F* hminpdf = new TH1F("hminpdf","",BIN_NUM,HMIN,HMAX);
   TH1F* hmaxpdf = new TH1F("hmaxpdf","",BIN_NUM,HMIN,HMAX);
+  TH1F* hfr_05_05 = new TH1F("hfr_05_05","",BIN_NUM,HMIN,HMAX);
+  TH1F* hfr_20_20 = new TH1F("hfr_20_20","",BIN_NUM,HMIN,HMAX);
+  TH1F* hfr_20_10 = new TH1F("hfr_20_10","",BIN_NUM,HMIN,HMAX);
+  TH1F* hfr_10_20 = new TH1F("hfr_10_20","",BIN_NUM,HMIN,HMAX);
+  TH1F* hfr_10_05 = new TH1F("hfr_10_05","",BIN_NUM,HMIN,HMAX);
+  TH1F* hfr_05_10 = new TH1F("hfr_05_10","",BIN_NUM,HMIN,HMAX);
+
 
   for(i=0;i<BIN_NUM;i++)
     {
@@ -69,6 +85,15 @@ int Bplusdsigmadpt_pp_7TeV_PPbBin()
       hmaxmass->SetBinContent(i+1,max_mass[i]);
       hminpdf->SetBinContent(i+1,min_pdf[i]);
       hmaxpdf->SetBinContent(i+1,max_pdf[i]);
+	  hminpdf->SetBinContent(i+1,min_pdf[i]);
+	  hmaxpdf->SetBinContent(i+1,max_pdf[i]);
+	  hfr_05_05->SetBinContent(i+1,fr_05_05[i]);
+	  hfr_20_20->SetBinContent(i+1,fr_20_20[i]);
+	  hfr_20_10->SetBinContent(i+1,fr_20_10[i]);
+	  hfr_10_20->SetBinContent(i+1,fr_10_20[i]);
+	  hfr_05_10->SetBinContent(i+1,fr_05_10[i]);
+	  hfr_10_05->SetBinContent(i+1,fr_10_05[i]);
+
     }
   //Rebin Edge
   double rebin[REBINp] = {10,15,20,25,30,60};
@@ -91,7 +116,6 @@ int Bplusdsigmadpt_pp_7TeV_PPbBin()
 
   //number of every rebined bin
   double bin_num[REBIN] = {20,20,20,20,120};//pPb_pt
-  
   int j;
   double norm=1.;
   
@@ -229,5 +253,74 @@ int Bplusdsigmadpt_pp_7TeV_PPbBin()
   foutput->cd();
   gae->Write();
   gaeSigmaDecay->Write();
+  hpt->Write();
+  hfr_05_05->Write();
+  hfr_20_20->Write();
+  hfr_20_10->Write();
+  hfr_10_20->Write();
+  hfr_10_05->Write();
+  hfr_05_10->Write();
+  hminall->Write();
+  hmaxall->Write();
+  hminsc->Write();
+  hmaxsc->Write();
+  hminmass->Write();
+  hmaxmass->Write();
+  hminpdf->Write();
+  hmaxpdf->Write();
   
+	TCanvas* c1 = new TCanvas("c1","",500,500);
+	c1->SetLogy(1);
+
+	TH1F* hbase = new TH1F("hbase","",13,5.0,65.0);
+	hbase->GetXaxis()->SetTitle("B^{+} p_{T}");
+	hbase->GetYaxis()->SetRangeUser(100.0,1000000000.0);
+	hbase->GetXaxis()->CenterTitle();
+	hbase->GetYaxis()->CenterTitle();
+	hbase->GetXaxis()->SetTitleOffset(1.0);
+	hbase->GetYaxis()->SetTitleOffset(1.4);
+	hbase->SetLineColor(0);
+	hbase->GetXaxis()->SetTitleSize(0.045);
+	hbase->GetYaxis()->SetTitleSize(0.045);
+	hbase->GetXaxis()->SetTitleFont(42);
+	hbase->GetYaxis()->SetTitleFont(42);
+	hbase->GetXaxis()->SetLabelFont(42);
+	hbase->GetYaxis()->SetLabelFont(42);
+	hbase->GetXaxis()->SetLabelSize(0.04);
+	hbase->GetYaxis()->SetLabelSize(0.04);
+	hbase->Draw("");
+
+	hpt->SetLineColor(kRed);
+	hpt->SetLineWidth(3);
+	hfr_05_05->SetLineColor(kOrange+7);
+	hfr_20_20->SetLineColor(kYellow-6);
+	hfr_20_10->SetLineColor(kTeal+3);
+	hfr_10_20->SetLineColor(kAzure+1);
+	hfr_05_10->SetLineColor(kBlue+4);
+	hfr_10_05->SetLineColor(kViolet+4);
+	hpt->Draw("same");
+	hfr_05_05->Draw("same");
+	hfr_20_20->Draw("same");
+	hfr_20_10->Draw("same");
+	hfr_10_20->Draw("same");
+	hfr_05_10->Draw("same");
+	hfr_10_05->Draw("same");
+
+	TLegend* leg = new TLegend(0.68,0.51,0.86,0.90);
+	leg->SetBorderSize(0);
+	leg->SetFillColor(0);
+	leg->SetTextFont(42);
+	leg->SetTextSize(0.040);
+	leg->AddEntry(hbase,"#mu_{F}/#mu_{0} , #mu_{R}/#mu_{0}","l");
+	leg->AddEntry(hpt,"  1.0   ,   1.0","l");
+	leg->AddEntry(hfr_05_05,"  0.5   ,   0.5","l");
+	leg->AddEntry(hfr_20_20,"  2.0   ,   2.0","l");
+	leg->AddEntry(hfr_20_10,"  2.0   ,   1.0","l");
+	leg->AddEntry(hfr_10_20,"  1.0   ,   2.0","l");
+	leg->AddEntry(hfr_10_05,"  1.0   ,   0.5","l");
+	leg->AddEntry(hfr_05_10,"  0.5   ,   1.0","l");
+	leg->Draw("");
+	c1->SaveAs("../ResultsBplus/CompFONLLdsigmadpt_7TeV.pdf");
+
+
 }
