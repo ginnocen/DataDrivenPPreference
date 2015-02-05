@@ -111,11 +111,16 @@ void GetBinned (int codeNum, int codeDen)
 
 		std :: cout << "# " << i << " : " << asigma[i] << std::endl;
 		selerr = sqrt(pow(eststa_befA[i],2)+pow(estsys_befA[i],2));//recalculated errorPerc from pp data, not times A
-		std :: cout << std::string(10,'-') << " error from data - stat. : " << eststa_befA[i] << " , syst. : " << estsys_befA[i] << "total : " << selerr << std::endl;
 
 		asigma[i] = (fitft->Integral(ptbin[i],ptbin[i+1]))/(ptbin[i+1]-ptbin[i])*scalefac[i];//scaled for 2.76TeV
 		aerrorh[i] = sqrt(pow(scalefac_plerr[i],2)+pow(selerr,2))*(asigma[i]);
 		aerrorl[i] = sqrt(pow(scalefac_mierr[i],2)+pow(selerr,2))*(asigma[i]);
+
+		std :: cout << std::string(10,'-') << " error from data before scaling, - stat . : " << eststa_befA[i] << " , syst. : " << estsys_befA[i] << "total : " << selerr << std::endl;
+		std :: cout << std::string(10,'-') << " scaling factor: " << scalefac[i]<< " upper band . : " << scalefac_plerr[i] << " , lower band: " << scalefac_mierr[i] << std::endl;
+		std :: cout << std::string(10,'-') << " error from data after scaling, - stat . : " << eststa_befA[i]*scalefac[i] << " , syst. : " << estsys_befA[i]*scalefac[i] << "total : " << selerr*scalefac[i] << std::endl;
+		std :: cout << std::string(10,'-') << " total systematic data stat+syst+FONLL all in quadrature . : " << sqrt(pow(scalefac_plerr[i],2)+pow(selerr,2))*scalefac[i] << " , lower band: " << sqrt(pow(scalefac_mierr[i],2)+pow(selerr,2))*scalefac[i]<< std::endl;
+		std :: cout << std::string(50,'-') << std::endl;
 
 
 	}
