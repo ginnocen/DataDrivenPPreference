@@ -186,7 +186,7 @@ int Bplusdsigmadpt_pp_7TeV_PPbBin()
   gae->SetLineWidth(3);
   gae->Draw("psame");
   
-  TLatex * tlatex=new TLatex(0.18,0.85,"pp collisions at 2.76 from FONLL, |y_{LAB}|<2.4");
+  TLatex * tlatex=new TLatex(0.18,0.85,"pp collisions at 7 TeV from FONLL, |y_{LAB}|<2.4");
   tlatex->SetNDC();
   tlatex->SetTextColor(1);
   tlatex->SetTextFont(42);
