@@ -217,7 +217,6 @@ void Comp_dsigma(int option){
 	else if (option==3) hemptyCR=new TH2F("hemptyCR","", 10, 5., 65., 15., 0.0, 5.0);    
 	//TH2F* hemptyCR=new TH2F("hemptyCR","", 10, 5., 65., 15., 0.5, 2.0);    
 
-
 	hemptyCR->GetXaxis()->SetTitle("B^{+} p_{T} (GeV/c)");
 	//if(particle=="Bplus") hemptyCR->GetYaxis()->SetTitle("d#sigma / dp_{T} (B^{+}) (pb GeV^{-1}c)");
 	//if(particle=="Bzero") hemptyCR->GetYaxis()->SetTitle("d#sigma / dp_{T} (B^{0}) (pb GeV^{-1}c)");
@@ -271,7 +270,9 @@ void Comp_dsigma(int option){
 	hR31->Draw("samep");
 	hR32->Draw("samep");
 	l2->Draw();
-	legendSigmaC=new TLegend(0.40,0.65,0.80,0.90,"");
+	//legendSigmaC=new TLegend(0.40,0.65,0.80,0.90,"");
+	legendSigmaC=new TLegend(0.20,0.70,0.60,0.90,"");
+
 	legendSigmaC->SetBorderSize(0);
 	legendSigmaC->SetLineColor(0);
 	legendSigmaC->SetFillColor(0);
@@ -285,7 +286,32 @@ void Comp_dsigma(int option){
 
 	//canvasRref->SaveAs("../ResultsBplus/hRcomp_Comp5TeV.pdf");
 	canvasRref->SaveAs(Form("../ResultsBplus/hRcomp_Comp%s.pdf",rmk.c_str()));
+	hemptyCR->GetYaxis()->SetTitle("Ratio of data+FONLL / FONLL");
+	hemptyCR->Draw();
+	hR12->Draw("samee2");
+	//hR31->Draw("samee2");
+	//hR32->Draw("samee2");
+	hR12->Draw("samep");
+	//hR31->Draw("samep");
+	//hR32->Draw("samep");
+	l2->Draw();
+	//legendSigmaC->Draw("");
+	//canvasRref->SaveAs("../ResultsBplus/hRcomp_Comp5TeV.pdf");
+	canvasRref->SaveAs(Form("../ResultsBplus/hRcomp_Comp%s_s1.pdf",rmk.c_str()));
 
+	hemptyCR->GetYaxis()->SetTitle("R_{pA}");
+	hemptyCR->Draw();
+	//hR12->Draw("samee2");
+	hR31->Draw("samee2");
+	hR32->Draw("samee2");
+	//hR12->Draw("samep");
+	hR31->Draw("samep");
+	hR32->Draw("samep");
+	l2->Draw();
+	legendSigmaC->DeleteEntry();
+	legendSigmaC->Draw("");
+	//canvasRref->SaveAs("../ResultsBplus/hRcomp_Comp5TeV.pdf");
+	canvasRref->SaveAs(Form("../ResultsBplus/hRcomp_Comp%s_s2.pdf",rmk.c_str()));
 
 	for (int i=0;i<6;i++){
 		std::cout << i << " : " << hR12->GetY()[i] << std::endl;
