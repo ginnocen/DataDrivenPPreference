@@ -96,22 +96,48 @@ After running, you can get the results for the case of
 	* ../ResultsBplus/hrefcomp_Comp5TeV(2760GeV,5TeV_w2760GeV).pdf 
 	* ../ResultsBplus/hRcomp_Comp5TeV(2760GeV,5TeV_w2760GeV).pdf 
 
+8. Check some ratios between FONLL, data and fitting
+
+* usage : root -l -b -q 'CheckScaleFac_v2.C+'
+
+
+
+
 ---------------------------------------------------------------------------------
 
 ## **Sequence of running codes for y dependence**
 
 1. Make the root file from dat files including FONLL expectation
 
-* file location : /fonll/Code
-
-* usage : root -l -b -q 'Bplusdsigmady_all.cc+(5)'
-
-* optional parameters
-
+* usage : root -l -b -q 'Bplusdsigmady_all.cc+(5)' 
+* optional parameters 
   1. beam energy and pT range: 5(5TeV), 7(7TeV), 2(2.76TeV), 71(7TeV,(5,120)-CMS pp binning), 72(7TeV, (9,12)-ATLAS pp binning)
-
   2. is it with analysis binning or not(bin width : 1GeV) : true(analysis binned), false(fine binned)
+* resulted file 
+	* ../ResultsBplus_y/outputBplusy_Unbinned(Binned)_5TeV(7TeV, 2760GeV)_rap30_pt1060(5120,9120,1060).root
 
-* resulted file and values
+2. Calculate the ratio of FONLL expectation (A vs. B) with our binning and related systematics
+
+* usage : root -l -b -q 'CompFONLL_Bplusdsigmady.cc+(1,0,0,1)';root -l -b -q 'CompFONLL_BplusdsigmadptUnbinned.cc+(1,1,0,1)'
+* optional parameters 
+  1. isBinned(default:0) : binned with our analysis binning(1) or with 1GeV fine binning(0)
+  2. isNorm(default:1) : normalized by central value(1) or central value itself(0)
+  3. What is numerator? : 5TeV_rap30_pt1060(0), 7TeV_rap30_pt1060(1), 7TeV_rap30_pt5120(2), 7TeV_rap30_pt9120(3), 2760GeV_rap30_pt1060(4) 
+  4. What is denominator? : 5TeV_rap30_pt1060(0), 7TeV_rap30_pt1060(1), 7TeV_rap30_pt5120(2), 7TeV_rap30_pt9120(3), 2760GeV_rap30_pt1060(4) 
+* resulted file
+	* ../ResultsBplus/CompFONLL_Bplus_Binned(Fine)_Val(Norm)_5TeV(7TeV,2760GeV)vs7TeV(5TeV,2760GeV).root
+	* ../ResultsBplus/CompFONLL_Bplus_Binned(Unbinned)_Val(Norm)_5TeV(7TeV,2760GeV)vs7TeV(5TeV,2760GeV).pdf - Ratio itself or relative errors from FONLL comparison
+	 and valuesvalues to check! - save as histogram in root file 
+* example in stored information in root file
+  1. CompFONLL_Bplus_Binned_Val_7TeVvs2760GeV.root - with (1,0) : central value 
+	**0.664924**+0.0171475-0.0126994 
+
+	**0.631362**+0.013487-0.0108966 
+
+  2. CompFONLL_Bplus_Binned_Norm_7TeVvs2760GeV.root - with (1,1) : check plus minus error 
+	1+**0.0257887**-**0.019099** 
+
+	1+**0.0213618**-**0.0172589** 
+
 
 
