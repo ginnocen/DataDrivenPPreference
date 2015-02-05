@@ -180,8 +180,7 @@ int Bplusdsigmadpt_pp_2p76TeV_PPbBin()
   //double BRchain=6.09604e-5;
   double BRchain=1.;
   double Fraction=0.401;
-  
-  double norm=208.;
+
   double BRFraction=BRchain*Fraction;
   
   for (int i=0;i<gaeSigmaDecay->GetN();i++){
@@ -194,7 +193,7 @@ int Bplusdsigmadpt_pp_2p76TeV_PPbBin()
   gaeSigmaDecay->SetFillStyle(3001); 
   gaeSigmaDecay->SetTitle(";p_{T}(GeV/c);d#sigma/dp_{T} (B^{+}) #times A (GeV^{-1}c)");
    
-  TH2F* hempty=new TH2F("hempty","",10,0,70.,10.,10000.,5000000000);  
+  TH2F* hempty=new TH2F("hempty","",10,0,70.,10.,10.,5000000);  
   hempty->GetXaxis()->SetTitle("p_{T} (GeV/c)");
   hempty->GetXaxis()->SetTitleOffset(1.);
   hempty->GetYaxis()->SetTitleOffset(.9);
