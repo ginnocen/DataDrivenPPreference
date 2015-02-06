@@ -11,8 +11,8 @@ Double_t FFsysterror=0.7/40.1;
 Double_t tagandprobcorrection[nbins]={1.049,1.030,1.019,1.012,1.006};
 
 
-//TString fofrom = "7TeV";
-TString fofrom = "2760GeV";
+TString fofrom = "7TeV";
+//TString fofrom = "2760GeV";
 
 void NuclearModificationDD(){
 
@@ -212,9 +212,7 @@ void NuclearModificationDD(){
 
   gaeBplusReference->Draw("2same");
   gSigmastat->SetFillColor(0);
-  gSigmastat->Draw("epsame");
-  
-  
+  gSigmastat->Draw("epsame");  
 
   //coord. for B+ and B0
   //TLegend *legendSigma=new TLegend(0.5745968,0.4756871,0.8729839,0.6490486,"");
@@ -254,12 +252,6 @@ void NuclearModificationDD(){
   ent_Sigmapp->SetMarkerColor(1);
 
   legendSigma->Draw("same");
-
-
-
-  
-
-  
   
   gSigmasyst->SetFillColor(0);
   gSigmasyst->SetFillStyle(0);
@@ -268,16 +260,11 @@ void NuclearModificationDD(){
   gSigmasyst->SetFillColor(0);
   gSigmasyst->SetFillStyle(0);
   gSigmasyst->Draw("2same");
-  
-  
-  
 
   TBox *d = new TBox(3,1-commonErrorN,7,1+commonErrorP);
   d->SetLineColor(1);
   d->SetFillColor(0);
   d->Draw();
-
-
     
   TLatex * tlatex1=new TLatex(0.1612903,0.8625793,"CMS Preliminary     pPb #sqrt{s_{NN}}= 5.02 TeV");
   tlatex1->SetNDC();
@@ -308,8 +295,7 @@ void NuclearModificationDD(){
   tlatex3->SetTextSize(0.06);
   tlatex3->Draw();
   
-
-  canvasSigma->SaveAs(Form("../Results%s/canvasSigma%s_with%s.pdf",particle.Data(),particle.Data(),fofrom.Data()));  
+  canvasSigma->SaveAs(Form("Plots/canvasSigma%s_with%s.pdf",particle.Data(),particle.Data(),fofrom.Data()));  
   
   //TGraphAsymmErrors *gRpAstat = new TGraphAsymmErrors(nbins,xbins,yRpA,exl,exl,yRpAStat,yRpAStat);
   TGraphAsymmErrors *gRpAstat = new TGraphAsymmErrors(nbins,xbins,yRpA,exl0,exl0,yRpAStat,yRpAStat);
@@ -454,9 +440,9 @@ void NuclearModificationDD(){
   tlatex3->Draw();
 
 //  l->Draw();  
-  canvasRpA->SaveAs(Form("../Results%s/canvasRpA%s_%s.pdf",particle.Data(),particle.Data(),fofrom.Data()));  
+  canvasRpA->SaveAs(Form("Plots/canvasRpA%s_%s.pdf",particle.Data(),particle.Data(),fofrom.Data()));  
   
-  TFile *fout=new TFile(Form("../Results%s/fileRpA%s_%s.root",particle.Data(),particle.Data(),fofrom.Data()),"recreate");  
+  TFile *fout=new TFile(Form("Rootf/fileRpA%s_%s.root",particle.Data(),particle.Data(),fofrom.Data()),"recreate");  
   fout->cd();
   gSigmasyst->SetName("gSigmasyst");
   gSigmasyst->Write();
