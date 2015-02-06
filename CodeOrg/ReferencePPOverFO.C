@@ -11,11 +11,13 @@ Double_t FFsysterror=0.7/40.1;
 Double_t tagandprobcorrection[nbins]={1.049,1.030,1.019,1.012,1.006};
 
 
-//TString fofrom = "7TeV";
-TString fofrom = "2760GeV";
+TString fofrom;
 
-void ReferencePPOverFO()
-{
+void ReferencePPOverFO(int option=2){
+
+  if(option==2)  fofrom= "2760GeV";
+  if(option==7)  fofrom= "7TeV";
+
   gROOT->SetStyle("Plain");
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
