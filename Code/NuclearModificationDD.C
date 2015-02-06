@@ -24,11 +24,11 @@ void NuclearModificationDD(){
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
   
-  TFile*filePPReference=new TFile("../../../fonll/Estimatedpp5TeV_with7TeV.root");  
+  TFile*filePPReference=new TFile("../ResultsBplus/Estimatedpp5TeV_with7TeV.root");  
   TGraphAsymmErrors*gaeBplusReference=(TGraphAsymmErrors*)filePPReference->Get("gaeEstimatedpp5TeV");
-  gaeBplusReference->SetName(Form("gae%sReference",particle.Data()));
+  gaeBplusReference->SetName("gaeBplusReference");
   
-  TFile*filepPb=new TFile(Form("../Results%s/Sigma%s.root",particle.Data(),particle.Data()));
+  TFile*filepPb=new TFile("../InputFilesData/SigmaBplus.root");
   TH1F*hSigmapPbStat=(TH1F*)filepPb->Get("hPtSigma");  
   TH1F*hPt=(TH1F*)filepPb->Get("hPt");
   TH1F*hEff=(TH1F*)filepPb->Get("hEff");
@@ -59,7 +59,7 @@ void NuclearModificationDD(){
     gaeBplusReference->SetPointEYlow(i,yerrorlow*scalingfactor*208);
 
   } 
-  
+   
   
   for (int i=0;i<nbins;i++){
     hSigmapPbStat->SetBinContent(i+1,(1./tagandprobcorrection[i])*hSigmapPbStat->GetBinContent(i+1));
