@@ -87,8 +87,6 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   TH1F* hmaxpdf_rebin = (TH1F*)hmaxpdf->Rebin(REBIN,"hmaxpdf_rebin",rebin);
 
   TH1F* hratio_rebin = (TH1F*)hratio->Rebin(REBIN,"hratio_rebin",rebin);
-  hratio_rebin->SetMaximum(1.5);
-  hratio_rebin->SetMinimum(0.5);
 
 
   //bin middle
@@ -237,8 +235,32 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   gaeSigmaDecay->SetName("gaeSigmaDecayBplus");
   canvas->SaveAs("Plots/canvasBplus_pp_pt_rap225_7TeV_AtlasBin.pdf");
 
-  TCanvas*cratio=new TCanvas("cratio","cratio",600,500);
+  TCanvas*cratio=new TCanvas("cratio","cratio",500,500);
+  hratio_rebin->SetMaximum(2.);
+  hratio_rebin->SetMinimum(0.5);
+  hratio_rebin->SetXTitle("p_{T}(GeV/c)");
+  hratio_rebin->SetYTitle("#sigma / #sigma(FONLL)");
+  hratio_rebin->SetTitleOffset(1.2,"Y");
+  hratio_rebin->SetLineColor(kRed);
+  hratio_rebin->SetFillStyle(3004);
+  hratio_rebin->SetFillColor(kRed);
+  hratio_rebin->SetLineWidth(3);
   hratio_rebin->Draw();
+
+  TLegend *leg = new TLegend(0.5,0.75,0.9,0.9);
+  leg->AddEntry((TObject*)0,"ATLAS pp 7TeV","");
+  leg->AddEntry((TObject*)0,"|y_{LAB}|<2.25","");
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->Draw("same");
+
+  TLine* lin0=new TLine(9,1,120,1);
+  lin0->SetLineStyle(2);
+  lin0->SetLineColor(1);
+  lin0->SetLineWidth(3);
+  lin0->Draw("same");
+
+  cratio->SaveAs("Plots/cratio_pp_pt_rap225_7TeV_AtlasBin.pdf");
 
   TFile*foutput=new TFile(outfile.Data(),"recreate");
   foutput->cd();
