@@ -249,25 +249,6 @@ int Bplusdsigmadpt_pp_5p02TeV_PPbBin()
   gaeSigmaDecay->SetName("gaeSigmaDecayBplus");
   canvas->SaveAs("Plots/canvasBplus_pp_pt_rap24_5p02TeV_PPbBin.pdf");
 
-  TFile*foutput=new TFile(outfile.Data(),"recreate");
-  foutput->cd();
-  gae->Write();
-  gaeSigmaDecay->Write();
-  hpt->Write();
-  hfr_05_05->Write();
-  hfr_20_20->Write();
-  hfr_20_10->Write();
-  hfr_10_20->Write();
-  hfr_10_05->Write();
-  hfr_05_10->Write();
-  hminall->Write();
-  hmaxall->Write();
-  hminsc->Write();
-  hmaxsc->Write();
-  hminmass->Write();
-  hmaxmass->Write();
-  hminpdf->Write();
-  hmaxpdf->Write();
   
 	TCanvas* c1 = new TCanvas("c1","",500,500);
 	c1->SetLogy(1);
@@ -321,6 +302,27 @@ int Bplusdsigmadpt_pp_5p02TeV_PPbBin()
 	leg->AddEntry(hfr_05_10,"  0.5   ,   1.0","l");
 	leg->Draw("");
 	c1->SaveAs("../ResultsBplus/CompFONLLdsigmadpt_5p02TeV.pdf");
+
+
+  TFile*foutput=new TFile(outfile.Data(),"recreate");
+  foutput->cd();
+  gae->Write();
+  gaeSigmaDecay->Write();
+  hpt->Write();
+  hfr_05_05->Write();
+  hfr_20_20->Write();
+  hfr_20_10->Write();
+  hfr_10_20->Write();
+  hfr_10_05->Write();
+  hfr_05_10->Write();
+  hminall->Write();
+  hmaxall->Write();
+  hminsc->Write();
+  hmaxsc->Write();
+  hminmass->Write();
+  hmaxmass->Write();
+  hminpdf->Write();
+  hmaxpdf->Write();
 
 
 }
