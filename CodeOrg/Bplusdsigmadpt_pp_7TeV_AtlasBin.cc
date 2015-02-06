@@ -58,6 +58,7 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   TH1F* hmaxpdf = new TH1F("hmaxpdf","",BIN_NUM,HMIN,HMAX);
   TH1F* hratio = new TH1F("hratio","",BIN_NUM,HMIN,HMAX);
 
+
   for(i=0;i<BIN_NUM;i++)
     {
       hpt->SetBinContent(i+1,central[i]);
@@ -72,6 +73,8 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
     }
 
   double data[REBIN] = {103.4,36.03,15.33,6.056,1.814,0.3477,0.06244,0.006099};
+  double staterror[REBIN] = {4.,0.8,0.3,0.1,0.03,0.008,0.003,0.0006};
+  double syserror[REBIN] = {8.,2.3,1.0,0.4,0.12,0.028,0.005,.0007};
 
   //Rebin Edge
   double rebin[REBINp] = {9.,13.,16.,20.,25.,35.,50.,70.,120.};
@@ -191,13 +194,17 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
 
   double norm=1.;
   double BRFraction=BRchain*Fraction;
+
+  double syserry[REBIN],syserrey[REBIN];
   
   for (int i=0;i<gaeSigmaDecay->GetN();i++){
     gaeSigmaDecay->GetY()[i] *= BRFraction*norm/1000000;
     gaeSigmaDecay->SetPointEYhigh(i,gaeSigmaDecay->GetErrorYhigh(i)*BRFraction*norm/1000000);
     gaeSigmaDecay->SetPointEYlow(i,gaeSigmaDecay->GetErrorYlow(i)*BRFraction*norm/1000000);
     hratio_rebin->SetBinContent(i+1,data[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR));
-    cout<<data[i]<<"  "<<gaeSigmaDecay->GetY()[i]*1000000*BR<<" "<<data[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR)<<endl;
+    hratio_rebin->SetBinError(i+1,staterror[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR));
+    syserry[i] = data[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR);
+    syserrey[i] = syserror[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR);
   }
 
   gaeSigmaDecay->SetFillColor(2);
@@ -241,11 +248,19 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   hratio_rebin->SetXTitle("p_{T}(GeV/c)");
   hratio_rebin->SetYTitle("#sigma / #sigma(FONLL)");
   hratio_rebin->SetTitleOffset(1.2,"Y");
-  hratio_rebin->SetLineColor(kRed);
-  hratio_rebin->SetFillStyle(3004);
-  hratio_rebin->SetFillColor(kRed);
-  hratio_rebin->SetLineWidth(3);
-  hratio_rebin->Draw();
+  hratio_rebin->SetMarkerStyle(8);
+  hratio_rebin->SetStats(0);
+  hratio_rebin->Draw("lep");
+
+  TGraphErrors* gsyserror = new TGraphErrors(REBIN,apt,syserry,aptl,syserrey);  
+  gsyserror->SetMarkerColor(1);
+  gsyserror->SetLineColor(1);
+  gsyserror->SetLineWidth(1);   
+  gsyserror->SetMarkerStyle(21);
+  gsyserror->SetMarkerColor(1);
+  gsyserror->SetFillColor(0);
+  gsyserror->SetFillStyle(0);
+  gsyserror->Draw("2same");
 
   TLegend *leg = new TLegend(0.5,0.75,0.9,0.9);
   leg->AddEntry((TObject*)0,"ATLAS pp 7TeV","");
@@ -253,6 +268,13 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
   leg->Draw("same");
+
+  TLegend *leg2 = new TLegend(0.55,0.60,0.9,0.75);
+  leg2->AddEntry(gsyserror,"Sys uncert","f");
+  leg2->AddEntry(hratio_rebin,"Stat uncert","ple");
+  leg2->SetBorderSize(0);
+  leg2->SetFillStyle(0);
+  leg2->Draw("same");
 
   TLine* lin0=new TLine(9,1,120,1);
   lin0->SetLineStyle(2);
