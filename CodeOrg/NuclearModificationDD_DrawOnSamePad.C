@@ -149,9 +149,10 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
     yPPsystFONLLlow[i]=gaeBplusReference->GetEYlow()[i];
     yPercPPsystFONLLhigh[i]=yPPsystFONLLhigh[i]/yRefPP[i];
     yPercPPsystFONLLlow[i]=yPPsystFONLLlow[i]/yRefPP[i];
-    yPercPPsystFONLLhigh[i]=TMath::Sqrt(yPercPPsystFONLLhigh[i]*yPercPPsystFONLLhigh[i]+FFsysterror*FFsysterror);
-    yPercPPsystFONLLlow[i]=TMath::Sqrt(yPercPPsystFONLLlow[i]*yPercPPsystFONLLlow[i]+FFsysterror*FFsysterror);
-    
+    //yPercPPsystFONLLhigh[i]=TMath::Sqrt(yPercPPsystFONLLhigh[i]*yPercPPsystFONLLhigh[i]+FFsysterror*FFsysterror);
+    //yPercPPsystFONLLlow[i]=TMath::Sqrt(yPercPPsystFONLLlow[i]*yPercPPsystFONLLlow[i]+FFsysterror*FFsysterror);
+    yPercPPsystFONLLhigh[i]=TMath::Sqrt(yPercPPsystFONLLhigh[i]*yPercPPsystFONLLhigh[i]);
+    yPercPPsystFONLLlow[i]=TMath::Sqrt(yPercPPsystFONLLlow[i]*yPercPPsystFONLLlow[i]); 
   }
   
   for(Int_t i=0;i<nbins;i++) {
@@ -166,11 +167,12 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
     yRpA[i]=ySigmapPb[i]/yRefPP[i];
     yRpAStat[i]=ySigmapPbStat[i]/yRefPP[i];
     yFONLL[i]=yRpA[i];
-    yPercRpAsystFONLLhigh[i]=(yPercPPsystFONLLlow[i]/(1-yPercPPsystFONLLlow[i]));
-    yPercRpAsystFONLLlow[i]=(yPercPPsystFONLLhigh[i]/(1+yPercPPsystFONLLhigh[i]));
+    //yPercRpAsystFONLLhigh[i]=(yPercPPsystFONLLlow[i]/(1-yPercPPsystFONLLlow[i]));
+    //yPercRpAsystFONLLlow[i]=(yPercPPsystFONLLhigh[i]/(1+yPercPPsystFONLLhigh[i]));
+    yPercRpAsystFONLLhigh[i]=yPercPPsystFONLLhigh[i];
+    yPercRpAsystFONLLlow[i]=yPercPPsystFONLLlow[i];
     yRpAsystFONLLhigh[i]=yPercRpAsystFONLLhigh[i]*yRpA[i];
     yRpAsystFONLLlow[i]=yPercRpAsystFONLLlow[i]*yRpA[i];
-
     yRpPbSystTotHigh[i]=yPercSigmapPbSystTotHigh[i]*yRpA[i];
     yRpPbSystTotLow[i]=yPercSigmapPbSystTotLow[i]*yRpA[i];
     //cout<<yRpPbSystTot[i]<<endl;
