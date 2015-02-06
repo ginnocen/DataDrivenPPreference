@@ -299,7 +299,7 @@ void NuclearModificationDD(int option=2){
   tlatex3->SetTextSize(0.06);
   tlatex3->Draw();
   
-  canvasSigma->SaveAs(Form("Plots/canvasSigma%s_with%s.pdf",particle.Data(),particle.Data(),fofrom.Data()));  
+  canvasSigma->SaveAs(Form("PlotsRpA_datadriven/canvasSigma%s_with%s.pdf",particle.Data(),fofrom.Data()));  
   
   //TGraphAsymmErrors *gRpAstat = new TGraphAsymmErrors(nbins,xbins,yRpA,exl,exl,yRpAStat,yRpAStat);
   TGraphAsymmErrors *gRpAstat = new TGraphAsymmErrors(nbins,xbins,yRpA,exl0,exl0,yRpAStat,yRpAStat);
@@ -444,9 +444,9 @@ void NuclearModificationDD(int option=2){
   tlatex3->Draw();
 
 //  l->Draw();  
-  canvasRpA->SaveAs(Form("Plots/canvasRpA%s_%s.pdf",particle.Data(),particle.Data(),fofrom.Data()));  
+  canvasRpA->SaveAs(Form("PlotsRpA_datadriven/canvasRpA%s_%s.pdf",particle.Data(),fofrom.Data()));  
   
-  TFile *fout=new TFile(Form("Rootf/fileRpA%s_%s.root",particle.Data(),particle.Data(),fofrom.Data()),"recreate");  
+  TFile *fout=new TFile(Form("Rootf/fileRpA%s_%s.root",particle.Data(),particle.Data()),"recreate");  
   fout->cd();
   gSigmasyst->SetName("gSigmasyst");
   gSigmasyst->Write();
