@@ -31,45 +31,101 @@ void ReferencePPOverFO(int option=2){
   
   double rebin[nbins+1] = {10,15,20,25,30,60};
   TH1F* hratio_rebin = new TH1F("hratio_rebin","hratio_rebin",5,rebin);
-
-  double yPP,yFO,xvalue;
+  
+  double yPP[nbins],yFO[nbins],yPPerrorup[nbins],yPPerrorlow[nbins],yFOerrorup[nbins],yFOerrorlow[nbins],ratio[nbins];
+  
+  double yPPval,yFOval,xvalue;
 
   for (int i=0;i<nbins;i++)
-    {
-      yPP=-1.;
-      yFO=-1.;
+    {      
+      if(fofrom=="7TeV") {
+        gaeBplusPPReference->GetPoint(i+1,xvalue,yPPval);
+        yPP[i]=yPPval;
+        yPPerrorup[i] =gaeBplusPPReference->GetErrorYhigh(i+1)/yPPval;
+        yPPerrorlow[i]=gaeBplusPPReference->GetErrorYlow(i+1)/yPPval;
+      }
+      else if(fofrom=="2760GeV") {
+        gaeBplusPPReference->GetPoint(i,xvalue,yPPval);
+        yPP[i]=yPPval;
+        yPPerrorup[i] =gaeBplusPPReference->GetErrorYhigh(i)/yPPval;
+        yPPerrorlow[i]=gaeBplusPPReference->GetErrorYlow(i)/yPPval;
+
+      }
       xvalue=-1.;
-      if(fofrom=="7TeV") gaeBplusPPReference->GetPoint(i+1,xvalue,yPP);
-      else if(fofrom=="2760GeV") gaeBplusPPReference->GetPoint(i,xvalue,yPP);
-      xvalue=-1.;
-      gaeBplusFOReference->GetPoint(i,xvalue,yFO);
-      hratio_rebin->SetBinContent(i+1,yPP*(1.e+6)*208/yFO);
-    }
+      gaeBplusFOReference->GetPoint(i,xvalue,yFOval);
+      yFO[i]=yFOval;
+      yFOerrorup[i]=gaeBplusFOReference->GetErrorYhigh(i)/yFOval;
+      yFOerrorlow[i]=gaeBplusFOReference->GetErrorYlow(i)/yFOval;
+      
+    } 
+    
+  for (int i=0;i<nbins;i++)
+    {      
+    ratio[i]=yPP[i]*(1.e+6)*208/yFO[i];
+    yPPerrorup[i]=yPPerrorup[i] *ratio[i];
+    yPPerrorlow[i]=yPPerrorlow[i] *ratio[i];
+    yFOerrorup[i]=yFOerrorup[i] *ratio[i];
+    yFOerrorlow[i]=yFOerrorlow[i] *ratio[i];
+    hratio_rebin->SetBinContent(i+1,yPP[i]*(1.e+6)*208/yFO[i]);
+
+    }   
+    
+  TGraphAsymmErrors *gaeDD = new TGraphAsymmErrors(nbins,xbins,ratio,exl,exl,yPPerrorlow,yPPerrorup);  
+  TGraphAsymmErrors *gaeFONLL = new TGraphAsymmErrors(nbins,xbins,ratio,exl,exl,yFOerrorlow,yFOerrorup);        
+
+
   
   TCanvas*cratio=new TCanvas("cratio","cratio",500,500);
-  hratio_rebin->SetMaximum(2.);
-  hratio_rebin->SetMinimum(0.5);
+  hratio_rebin->SetMaximum(3);
+  hratio_rebin->SetMinimum(0);
   hratio_rebin->SetXTitle("p_{T}(GeV/c)");
   hratio_rebin->SetYTitle("Reference_{Data Driven} / Reference_{FONLL}");
   hratio_rebin->SetTitleOffset(1.2,"Y");
-  hratio_rebin->SetLineColor(kRed);
-  hratio_rebin->SetFillStyle(3004);
-  hratio_rebin->SetFillColor(kRed);
+  //hratio_rebin->SetLineColor(kRed);
+  //hratio_rebin->SetFillStyle(3004);
+  //hratio_rebin->SetFillColor(kRed);
   hratio_rebin->SetLineWidth(3);
-  hratio_rebin->Draw();
+  hratio_rebin->Draw("p");
 
-  TLegend *leg = new TLegend(0.5,0.75,0.9,0.9);
-  leg->AddEntry((TObject*)0,"Reference 5.02TeV","");
-  leg->AddEntry((TObject*)0,"|y_{LAB}|<2.4","");
-  leg->SetBorderSize(0);
-  leg->SetFillStyle(0);
-  leg->Draw("same");
+
+  gaeFONLL->SetMarkerColor(1);
+  gaeFONLL->SetMarkerStyle(21);  
+  gaeFONLL->SetFillColor(5);
+  gaeFONLL->SetFillStyle(1001);
+  gaeFONLL->SetLineColor(1);
+  gaeFONLL->SetLineWidth(5);
+  gaeFONLL->Draw("2");
+  
+  gaeDD->SetLineColor(1);
+  gaeDD->SetMarkerColor(1);
+  gaeDD->Draw("epsame");
+  gaeDD->SetLineWidth(3);
+  
+
+  TLegend *legend=new TLegend(0.1975806,0.6109937,0.4959677,0.8012685,"");
+  legend->SetBorderSize(0);
+  legend->SetLineColor(0);
+  legend->SetFillColor(0);
+  legend->SetFillStyle(1001);
+  legend->SetTextFont(42);
+  legend->SetTextSize(0.045);
+
+  TLegendEntry *ent_FONLL=legend->AddEntry(gaeFONLL,"syst fonll uncertainty","f");
+  ent_FONLL->SetTextFont(42);
+  ent_FONLL->SetLineColor(5);
+  ent_FONLL->SetMarkerColor(5);
+
+  TLegendEntry *ent_DD=legend->AddEntry(gaeDD,"Tot data driven reference unc","ple");
+  ent_DD->SetTextFont(42);
+  ent_DD->SetLineColor(1);
+  ent_DD->SetMarkerColor(1);
 
   TLine* lin0=new TLine(9,1,120,1);
   lin0->SetLineStyle(2);
   lin0->SetLineColor(1);
   lin0->SetLineWidth(3);
   lin0->Draw("same");
+  legend->Draw("same");
 
   cratio->SaveAs(Form("Plots/cratio_ReferencePPOverFO_%s.pdf",fofrom.Data()));
 
