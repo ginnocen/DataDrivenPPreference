@@ -26,9 +26,10 @@ void CompFONLL_Bplusdsigmadpt(int isBinned=0,int isNorm=1, int codeNum=1, int co
 	//gStyle->SetTitleOffset(5.0,"Y");
 
 	TFile* fin_name[3];
-	fin_name[0]=new TFile("../ResultsBplus/outputBplus_Unbinned_5TeV.root");
-	fin_name[1]=new TFile("../ResultsBplus/outputBplus_Unbinned_7TeV.root");
-	fin_name[2]=new TFile("../ResultsBplus/outputBplus_Unbinned_2760GeV.root");
+	fin_name[0]=new TFile("../CodeOrg/Rootf/outputBplus_pp_pt_rap24_5p02TeV_PPbBin.root");
+	fin_name[1]=new TFile("../CodeOrg/Rootf/outputBplus_pp_pt_rap24_7TeV_PPbBin.root");
+	fin_name[2]=new TFile("../CodeOrg/Rootf/outputBplus_pp_pt_rap24_2p76TeV_PPbBin.root");
+
 
 	std::string codeName[3]={"5TeV","7TeV","2760GeV"};
 
