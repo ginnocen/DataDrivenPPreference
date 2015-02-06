@@ -11,10 +11,13 @@ Double_t FFsysterror=0.7/40.1;
 Double_t tagandprobcorrection[nbins]={1.049,1.030,1.019,1.012,1.006};
 
 
-TString fofrom = "7TeV";
-//TString fofrom = "2760GeV";
+//TString fofrom = "7TeV";
+TString fofrom;
 
-void NuclearModificationDD(){
+void NuclearModificationDD(int option=2){
+
+  if(option==2)  fofrom= "2760GeV";
+  if(option==7)  fofrom= "7TeV";
 
   gROOT->SetStyle("Plain");
   gStyle->SetOptTitle(0);
@@ -50,6 +53,7 @@ void NuclearModificationDD(){
 	  gaeBplusReferenceOrigin->GetPoint(i+1,xvalue,yvalue);
 	  yerrorhigh=gaeBplusReferenceOrigin->GetEYhigh()[i+1];
 	  yerrorlow=gaeBplusReferenceOrigin->GetEYlow()[i+1];
+	  std::cout<<"error high="<<yerrorhigh<<", error low="<<yerrorlow<<std::endl;
 	}
       if(fofrom=="2760GeV")
 	{
@@ -106,8 +110,8 @@ void NuclearModificationDD(){
     yPPsystFONLLlow[i]=gaeBplusReference->GetEYlow()[i];
     yPercPPsystFONLLhigh[i]=yPPsystFONLLhigh[i]/yRefPP[i];
     yPercPPsystFONLLlow[i]=yPPsystFONLLlow[i]/yRefPP[i];
-    yPercPPsystFONLLhigh[i]=TMath::Sqrt(yPercPPsystFONLLhigh[i]*yPercPPsystFONLLhigh[i]+FFsysterror*FFsysterror);
-    yPercPPsystFONLLlow[i]=TMath::Sqrt(yPercPPsystFONLLlow[i]*yPercPPsystFONLLlow[i]+FFsysterror*FFsysterror);
+    yPercPPsystFONLLhigh[i]=TMath::Sqrt(yPercPPsystFONLLhigh[i]*yPercPPsystFONLLhigh[i]);
+    yPercPPsystFONLLlow[i]=TMath::Sqrt(yPercPPsystFONLLlow[i]*yPercPPsystFONLLlow[i]);
     
   }
   
@@ -123,8 +127,8 @@ void NuclearModificationDD(){
     yRpA[i]=ySigmapPb[i]/yRefPP[i];
     yRpAStat[i]=ySigmapPbStat[i]/yRefPP[i];
     yFONLL[i]=yRpA[i];
-    yPercRpAsystFONLLhigh[i]=(yPercPPsystFONLLlow[i]/(1-yPercPPsystFONLLlow[i]));
-    yPercRpAsystFONLLlow[i]=(yPercPPsystFONLLhigh[i]/(1+yPercPPsystFONLLhigh[i]));
+    yPercRpAsystFONLLhigh[i]=yPercPPsystFONLLhigh[i];
+    yPercRpAsystFONLLlow[i]=yPercPPsystFONLLlow[i];
     yRpAsystFONLLhigh[i]=yPercRpAsystFONLLhigh[i]*yRpA[i];
     yRpAsystFONLLlow[i]=yPercRpAsystFONLLlow[i]*yRpA[i];
 
@@ -266,7 +270,7 @@ void NuclearModificationDD(){
   d->SetFillColor(0);
   d->Draw();
     
-  TLatex * tlatex1=new TLatex(0.1612903,0.8625793,"CMS Preliminary     pPb #sqrt{s_{NN}}= 5.02 TeV");
+  TLatex * tlatex1=new TLatex(0.1612903,0.8625793,"                    pPb #sqrt{s_{NN}}= 5.02 TeV");
   tlatex1->SetNDC();
   tlatex1->SetTextColor(1);
   tlatex1->SetTextFont(42);
@@ -344,13 +348,13 @@ void NuclearModificationDD(){
   legendRpA->SetTextFont(42);
   legendRpA->SetTextSize(0.045);
 
-  TH2F* hempty=new TH2F("hempty","",10,0.,70,10.,0.,2.5);  
+  TH2F* hempty=new TH2F("hempty","",10,0.,70,10.,0.,4.);  
   
   hempty->GetXaxis()->CenterTitle();
   hempty->GetYaxis()->CenterTitle();
   
   hempty->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  hempty->GetYaxis()->SetTitle("R^{FONLL}_{pA}");
+  hempty->GetYaxis()->SetTitle("R^{data-driven}");
   
   hempty->GetXaxis()->SetTitleOffset(1.1);
   hempty->GetYaxis()->SetTitleOffset(1.1);
@@ -400,7 +404,7 @@ void NuclearModificationDD(){
   b->Draw();
 
 
-  TLegendEntry *ent_RpAstat=legendRpA->AddEntry(gRpAstat,"R^{FONLL}_{pA}","pf");
+  TLegendEntry *ent_RpAstat=legendRpA->AddEntry(gRpAstat,"R^{data-driven}_{pA}","pf");
   ent_RpAstat->SetTextFont(42);
   ent_RpAstat->SetLineColor(2);
   ent_RpAstat->SetMarkerColor(2);
@@ -415,7 +419,7 @@ void NuclearModificationDD(){
 
 
   
-  TLegendEntry *ent_RpAsystFONLL=legendRpA->AddEntry(gRpAsystFONLL,"Syst. err. from FONLL pp ref.","f");
+  TLegendEntry *ent_RpAsystFONLL=legendRpA->AddEntry(gRpAsystFONLL,"Tot. unc. from extrapolated ref.","f");
   ent_RpAsystFONLL->SetTextFont(42);
   ent_RpAsystFONLL->SetLineColor(5);
   ent_RpAsystFONLL->SetLineStyle(1);
@@ -423,7 +427,7 @@ void NuclearModificationDD(){
   
   legendRpA->Draw();
   
-  TLatex * tlatex1=new TLatex(0.1612903,0.8625793,"CMS Preliminary     pPb #sqrt{s_{NN}}= 5.02 TeV");
+  TLatex * tlatex1=new TLatex(0.1612903,0.8625793,"                    pPb #sqrt{s_{NN}}= 5.02 TeV");
   tlatex1->SetNDC();
   tlatex1->SetTextColor(1);
   tlatex1->SetTextFont(42);
