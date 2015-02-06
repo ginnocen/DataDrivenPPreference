@@ -7,20 +7,20 @@
 #include <iostream>
 
 #define BIN_NUM 460 //pPb_pt:220,pPb_y:40,pp_pt:222,pp_y:45
-#define REBIN 8     //pPb_pt:6,pPb_y:4,pp_pt:8,pp_y:4
-#define REBINp 9    //pPb_pt:7,pPb_y:5,pp_pt:9,pp_y:5
+#define REBIN 5     //pPb_pt:6,pPb_y:4,pp_pt:8,pp_y:4
+#define REBINp 6    //pPb_pt:7,pPb_y:5,pp_pt:9,pp_y:5
 #define HMIN 5      //pPb_pt:5,pPb_y:-2,pp_pt:9,pp_y:0
 #define HMAX 120     //pPb_pt:55,pPb_y:2,pp_pt:120,pp_y:2.25
 
-int Bplusdsigmadpt_pp_7TeV_AtlasBin()
+int Bplusdsigmadpt_pp_7TeV_CmsBin()
 {
   TString infile,outfile;
   gROOT->SetStyle("Plain");
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
 
-  infile="../FONLLInputs/fo_pp_pt_rap225_7TeV.dat";
-  outfile="Rootf/outputBplus_pp_pt_rap225_7TeV.root";
+  infile="../FONLLInputs/fo_pp_pt_rap24_7TeV.dat";
+  outfile="Rootf/outputBplus_pp_pt_rap24_7TeV_CmsBin.root";
   
   ifstream getdata(infile.Data());
 
@@ -58,7 +58,6 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   TH1F* hmaxpdf = new TH1F("hmaxpdf","",BIN_NUM,HMIN,HMAX);
   TH1F* hratio = new TH1F("hratio","",BIN_NUM,HMIN,HMAX);
 
-
   for(i=0;i<BIN_NUM;i++)
     {
       hpt->SetBinContent(i+1,central[i]);
@@ -72,12 +71,12 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
       hmaxpdf->SetBinContent(i+1,max_pdf[i]);
     }
 
-  double data[REBIN] = {103.4,36.03,15.33,6.056,1.814,0.3477,0.06244,0.006099};
-  double staterror[REBIN] = {4.,0.8,0.3,0.1,0.03,0.008,0.003,0.0006};
-  double syserror[REBIN] = {8.,2.3,1.0,0.4,0.12,0.028,0.005,.0007};
+  double data[REBIN] = {4.07,1.47,0.412,0.181,0.042}; //#mub
+  double staterror[REBIN] = {0.47,0.13,0.041,0.015,0.007};
+  double syserror[REBIN] = {0.31,0.09,0.026,0.012,0.004};
 
   //Rebin Edge
-  double rebin[REBINp] = {9.,13.,16.,20.,25.,35.,50.,70.,120.};
+  double rebin[REBINp] = {5.,10.,13.,17.,24.,30.};
 
   TH1F* hpt_rebin = (TH1F*)hpt->Rebin(REBIN,"hpt_rebin",rebin);
   TH1F* hminall_rebin = (TH1F*)hminsc->Rebin(REBIN,"hminall_rebin",rebin);
@@ -91,15 +90,14 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
 
   TH1F* hratio_rebin = (TH1F*)hratio->Rebin(REBIN,"hratio_rebin",rebin);
 
-
   //bin middle
-  double apt[REBIN] = {11.,14.5,18.,22.5,30.,42.5,60.,95.};//pPb_pt
+  double apt[REBIN] = {7.5,11.5,15,20.5,27};
   //bin half width
-  double aptl[REBIN] = {2.,1.5,2.,2.5,5.,7.5,10.,25.};//pPb_pt
+  double aptl[REBIN] = {2.5,1.5,2.,3.5,3.};
   double asigma[REBIN],aminall[REBIN],amaxall[REBIN],aminsc[REBIN],amaxsc[REBIN],aminmass[REBIN],amaxmass[REBIN],aminpdf[REBIN],amaxpdf[REBIN],aerrorl[REBIN],aerrorh[REBIN];
 
   //number of every rebined bin
-  double bin_num[REBIN] = {16.,12,16.,20.,40.,60.,80.,200.};//pPb_pt
+  double bin_num[REBIN] = {20.,12.,16.,28.,24.};
   
   int j;
   double norm=1.;
@@ -149,7 +147,7 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
 
   TCanvas* cr = new TCanvas("cr","cr",600,500);
   cr->SetLogy();
-  TH2F* hempty=new TH2F("hempty","",10,5,60.,10.,10,100000000);  
+  TH2F* hempty=new TH2F("hempty","",10,5,40.,1000.,10,1000000000);  
   hempty->GetXaxis()->SetTitle("p_{t} (GeV/c)");
   hempty->GetYaxis()->SetTitle("d#sigma(B admix)/dp_{T}(pb/GeV)");
   hempty->GetXaxis()->SetTitleOffset(1.);
@@ -172,7 +170,7 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   gae->SetLineWidth(3);
   gae->Draw("psame");
   
-  TLatex * tlatex=new TLatex(0.18,0.85,"pp collisions at 7TeV from FONLL, |y_{LAB}|<2.25");
+  TLatex * tlatex=new TLatex(0.18,0.85,"pp collisions at 7TeV from FONLL, |y_{LAB}|<2.4");
   tlatex->SetNDC();
   tlatex->SetTextColor(1);
   tlatex->SetTextFont(42);
@@ -184,34 +182,35 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   tlatex->SetTextFont(42);
   tlatex->SetTextSize(0.04);
   tlatex->Draw();
-  cr->SaveAs("Plots/cBmesonPredFONLLBplusBinning_pp_pt_rap225_7TeV_AtlasBin.pdf");
+  cr->SaveAs("Plots/cBmesonPredFONLLBplusBinning_pp_pt_rap24_7TeV_CmsBin.pdf");
   TGraphAsymmErrors* gaeSigmaDecay=(TGraphAsymmErrors*)gae->Clone();
   gaeSigmaDecay->SetName("gaeSigmaDecay");
   //double BRchain=6.09604e-5;
   double BRchain=1.;
   double Fraction=0.401;
-  double BR=0.001016*0.0593;
+  double BR=1.;
 
   double norm=1.;
   double BRFraction=BRchain*Fraction;
 
   double syserry[REBIN],syserrey[REBIN];
   
-  for (int i=0;i<gaeSigmaDecay->GetN();i++){
-    gaeSigmaDecay->GetY()[i] *= BRFraction*norm/1000000;
-    gaeSigmaDecay->SetPointEYhigh(i,gaeSigmaDecay->GetErrorYhigh(i)*BRFraction*norm/1000000);
-    gaeSigmaDecay->SetPointEYlow(i,gaeSigmaDecay->GetErrorYlow(i)*BRFraction*norm/1000000);
-    hratio_rebin->SetBinContent(i+1,data[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR));
-    hratio_rebin->SetBinError(i+1,staterror[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR));
-    syserry[i] = data[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR);
-    syserrey[i] = syserror[i]/(gaeSigmaDecay->GetY()[i]*1000000*BR);
-  }
+  for (int i=0;i<gaeSigmaDecay->GetN();i++)
+    {
+      gaeSigmaDecay->GetY()[i] *= BRFraction*norm/1000000;
+      gaeSigmaDecay->SetPointEYhigh(i,gaeSigmaDecay->GetErrorYhigh(i)*BRFraction*norm/1000000);
+      gaeSigmaDecay->SetPointEYlow(i,gaeSigmaDecay->GetErrorYlow(i)*BRFraction*norm/1000000);
+      hratio_rebin->SetBinContent(i+1,data[i]/(gaeSigmaDecay->GetY()[i]*BR));
+      hratio_rebin->SetBinError(i+1,staterror[i]/(gaeSigmaDecay->GetY()[i]*BR));
+      syserry[i] = data[i]/(gaeSigmaDecay->GetY()[i]*BR);
+      syserrey[i] = syserror[i]/(gaeSigmaDecay->GetY()[i]*BR); 
+    }
 
   gaeSigmaDecay->SetFillColor(2);
   gaeSigmaDecay->SetFillStyle(3001); 
   gaeSigmaDecay->SetTitle(";p_{T}(GeV/c);d#sigma/dp_{T} (B^{+}) #times A (GeV^{-1}c)");
    
-  TH2F* hempty=new TH2F("hempty","",10,0,120.,10.,1.e-6,10);  
+  TH2F* hempty=new TH2F("hempty","",10,0,40.,10.,1.e-2,100);  
   hempty->GetXaxis()->SetTitle("p_{T} (GeV/c)");
   hempty->GetXaxis()->SetTitleOffset(1.);
   hempty->GetYaxis()->SetTitleOffset(.9);
@@ -231,7 +230,7 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   gaeSigmaDecay->Draw("psame");
   
   //TLatex * tlatex=new TLatex(0.2,0.85,"B^{+}=40.1%, |y|<1.93, BR unc not shown");
-  TLatex * tlatex=new TLatex(0.2,0.85,"B^{+},|y_{LAB}|<2.25, BR unc not shown");
+  TLatex * tlatex=new TLatex(0.2,0.85,"B^{+},|y_{LAB}|<2.4, BR unc not shown");
   tlatex->SetNDC();
   tlatex->SetTextColor(1);
   tlatex->SetTextFont(42);
@@ -240,11 +239,11 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   
   gae->SetName("gaeBplus");
   gaeSigmaDecay->SetName("gaeSigmaDecayBplus");
-  canvas->SaveAs("Plots/canvasBplus_pp_pt_rap225_7TeV_AtlasBin.pdf");
+  canvas->SaveAs("Plots/canvasBplus_pp_pt_rap24_7TeV_CmsBin.pdf");
 
   TCanvas*cratio=new TCanvas("cratio","cratio",500,500);
-  hratio_rebin->SetMaximum(2.);
-  hratio_rebin->SetMinimum(0.5);
+  hratio_rebin->SetMaximum(3.);
+  hratio_rebin->SetMinimum(0.);
   hratio_rebin->SetXTitle("p_{T}(GeV/c)");
   hratio_rebin->SetYTitle("#sigma / #sigma(FONLL)");
   hratio_rebin->SetTitleOffset(1.2,"Y");
@@ -262,13 +261,6 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   gsyserror->SetFillStyle(0);
   gsyserror->Draw("2same");
 
-  TLegend *leg = new TLegend(0.5,0.75,0.9,0.9);
-  leg->AddEntry((TObject*)0,"ATLAS pp 7TeV","");
-  leg->AddEntry((TObject*)0,"|y_{LAB}|<2.25","");
-  leg->SetBorderSize(0);
-  leg->SetFillStyle(0);
-  leg->Draw("same");
-
   TLegend *leg2 = new TLegend(0.55,0.60,0.9,0.75);
   leg2->AddEntry(gsyserror,"Sys uncert","f");
   leg2->AddEntry(hratio_rebin,"Stat uncert","ple");
@@ -276,13 +268,20 @@ int Bplusdsigmadpt_pp_7TeV_AtlasBin()
   leg2->SetFillStyle(0);
   leg2->Draw("same");
 
-  TLine* lin0=new TLine(9,1,120,1);
+  TLegend *leg = new TLegend(0.5,0.75,0.9,0.9);
+  leg->AddEntry((TObject*)0,"CMS pp 7TeV","");
+  leg->AddEntry((TObject*)0,"|y_{LAB}|<2.4","");
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->Draw("same");
+
+  TLine* lin0=new TLine(5,1,30,1);
   lin0->SetLineStyle(2);
   lin0->SetLineColor(1);
   lin0->SetLineWidth(3);
   lin0->Draw("same");
 
-  cratio->SaveAs("Plots/cratio_pp_pt_rap225_7TeV_AtlasBin.pdf");
+  cratio->SaveAs("Plots/cratio_pp_pt_rap24_7TeV_CmsBin.pdf");
 
   TFile*foutput=new TFile(outfile.Data(),"recreate");
   foutput->cd();
