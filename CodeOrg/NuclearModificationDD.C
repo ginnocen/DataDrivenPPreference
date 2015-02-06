@@ -11,9 +11,10 @@ Double_t FFsysterror=0.7/40.1;
 Double_t tagandprobcorrection[nbins]={1.049,1.030,1.019,1.012,1.006};
 
 
+//TString fofrom = "7TeV";
 TString fofrom = "2760GeV";
 
-void NuclearModificationDD_2p76(){
+void NuclearModificationDD(){
 
   gROOT->SetStyle("Plain");
   gStyle->SetOptTitle(0);
@@ -43,11 +44,19 @@ void NuclearModificationDD_2p76(){
       xvalue=-1.;
       yerrorhigh=-1.;
       yerrorlow=-1.;
-      
-      gaeBplusReferenceOrigin->GetPoint(i,xvalue,yvalue);
-      yerrorhigh=gaeBplusReferenceOrigin->GetEYhigh()[i];
-      yerrorlow=gaeBplusReferenceOrigin->GetEYlow()[i];
 
+      if(fofrom=="7TeV")
+	{
+	  gaeBplusReferenceOrigin->GetPoint(i+1,xvalue,yvalue);
+	  yerrorhigh=gaeBplusReferenceOrigin->GetEYhigh()[i+1];
+	  yerrorlow=gaeBplusReferenceOrigin->GetEYlow()[i+1];
+	}
+      if(fofrom=="2760GeV")
+	{
+	  gaeBplusReferenceOrigin->GetPoint(i,xvalue,yvalue);
+	  yerrorhigh=gaeBplusReferenceOrigin->GetEYhigh()[i];
+	  yerrorlow=gaeBplusReferenceOrigin->GetEYlow()[i];
+	}
       ytem[i] = yvalue*scalingfactor*208;
       ylow[i] = yerrorhigh*scalingfactor*208;
       yhigh[i] = yerrorlow*scalingfactor*208;
