@@ -72,6 +72,8 @@ int Bplusdsigmadpt_pp_7TeV_CmsBin()
     }
 
   double data[REBIN] = {4.07,1.47,0.412,0.181,0.042}; //#mub
+  double staterror[REBIN] = {0.47,0.13,0.041,0.015,0.007};
+  double syserror[REBIN] = {0.31,0.09,0.026,0.012,0.004};
 
   //Rebin Edge
   double rebin[REBINp] = {5.,10.,13.,17.,24.,30.};
@@ -190,14 +192,19 @@ int Bplusdsigmadpt_pp_7TeV_CmsBin()
 
   double norm=1.;
   double BRFraction=BRchain*Fraction;
+
+  double syserry[REBIN],syserrey[REBIN];
   
-  for (int i=0;i<gaeSigmaDecay->GetN();i++){
-    gaeSigmaDecay->GetY()[i] *= BRFraction*norm/1000000;
-    gaeSigmaDecay->SetPointEYhigh(i,gaeSigmaDecay->GetErrorYhigh(i)*BRFraction*norm/1000000);
-    gaeSigmaDecay->SetPointEYlow(i,gaeSigmaDecay->GetErrorYlow(i)*BRFraction*norm/1000000);
-    hratio_rebin->SetBinContent(i+1,data[i]/(gaeSigmaDecay->GetY()[i]*BR));
-    cout<<data[i]<<"  "<<gaeSigmaDecay->GetY()[i]*BR<<" "<<data[i]/(gaeSigmaDecay->GetY()[i]*BR)<<endl;
-  }
+  for (int i=0;i<gaeSigmaDecay->GetN();i++)
+    {
+      gaeSigmaDecay->GetY()[i] *= BRFraction*norm/1000000;
+      gaeSigmaDecay->SetPointEYhigh(i,gaeSigmaDecay->GetErrorYhigh(i)*BRFraction*norm/1000000);
+      gaeSigmaDecay->SetPointEYlow(i,gaeSigmaDecay->GetErrorYlow(i)*BRFraction*norm/1000000);
+      hratio_rebin->SetBinContent(i+1,data[i]/(gaeSigmaDecay->GetY()[i]*BR));
+      hratio_rebin->SetBinError(i+1,staterror[i]/(gaeSigmaDecay->GetY()[i]*BR));
+      syserry[i] = data[i]/(gaeSigmaDecay->GetY()[i]*BR);
+      syserrey[i] = syserror[i]/(gaeSigmaDecay->GetY()[i]*BR); 
+    }
 
   gaeSigmaDecay->SetFillColor(2);
   gaeSigmaDecay->SetFillStyle(3001); 
@@ -240,11 +247,26 @@ int Bplusdsigmadpt_pp_7TeV_CmsBin()
   hratio_rebin->SetXTitle("p_{T}(GeV/c)");
   hratio_rebin->SetYTitle("#sigma / #sigma(FONLL)");
   hratio_rebin->SetTitleOffset(1.2,"Y");
-  hratio_rebin->SetLineColor(kRed);
-  hratio_rebin->SetFillStyle(3004);
-  hratio_rebin->SetFillColor(kRed);
-  hratio_rebin->SetLineWidth(3);
-  hratio_rebin->Draw();
+  hratio_rebin->SetMarkerStyle(8);
+  hratio_rebin->SetStats(0);
+  hratio_rebin->Draw("lep");
+
+  TGraphErrors* gsyserror = new TGraphErrors(REBIN,apt,syserry,aptl,syserrey);  
+  gsyserror->SetMarkerColor(1);
+  gsyserror->SetLineColor(1);
+  gsyserror->SetLineWidth(1);   
+  gsyserror->SetMarkerStyle(21);
+  gsyserror->SetMarkerColor(1);
+  gsyserror->SetFillColor(0);
+  gsyserror->SetFillStyle(0);
+  gsyserror->Draw("2same");
+
+  TLegend *leg2 = new TLegend(0.55,0.60,0.9,0.75);
+  leg2->AddEntry(gsyserror,"Sys uncert","f");
+  leg2->AddEntry(hratio_rebin,"Stat uncert","ple");
+  leg2->SetBorderSize(0);
+  leg2->SetFillStyle(0);
+  leg2->Draw("same");
 
   TLegend *leg = new TLegend(0.5,0.75,0.9,0.9);
   leg->AddEntry((TObject*)0,"CMS pp 7TeV","");
