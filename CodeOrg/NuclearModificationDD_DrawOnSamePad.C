@@ -253,12 +253,7 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
   gSigmastat->SetFillColor(0);
   gSigmastat->Draw("epsame");
 
-  //coord. for B+ and B0
-  //TLegend *legendSigma=new TLegend(0.5745968,0.4756871,0.8729839,0.6490486,"");
-  //coord.  B0
   TLegend *legendSigma=new TLegend(0.5100806,0.5868644,0.8084677,0.7605932,"");
-  //coord. for B_s
-  //TLegend *legendSigma=new TLegend(0.2580645,0.6122881,0.5564516,0.7860169,"");
   legendSigma->SetBorderSize(0);
   legendSigma->SetLineColor(0);
   legendSigma->SetFillColor(0);
@@ -271,30 +266,19 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
   c->SetFillColor(5);
   c->Draw();
 
-  //TLegendEntry *ent_Sigmapp=legendSigma->AddEntry(gaeBplusReference,"pp reference","PLF");
-  
   TLegendEntry *ent_SigmapPb=legendSigma->AddEntry(gSigmastat,"pPb","pf");
   ent_SigmapPb->SetTextFont(42);
   ent_SigmapPb->SetLineColor(1);
-  //ent_SigmapPb->SetFillColor(0);
-  ent_SigmapPb->SetMarkerColor(1);
-  
-  //TLegendEntry *ent_SigmapPbSyst=legendSigma->AddEntry(gSigmasyst,"pPb","f");
-  //ent_SigmapPbSyst->SetTextFont(42);
-  //ent_SigmapPbSyst->SetLineColor(1);
-  //ent_SigmapPbSyst->SetMarkerColor(1);
-  
-  TLegendEntry *ent_Sigmapp=legendSigma->AddEntry(c,"FONLL pp ref.","f");
+  ent_SigmapPb->SetMarkerColor(1);  
+  TLegendEntry *ent_Sigmapp=legendSigma->AddEntry(c,"pp reference.","f");
   ent_Sigmapp->SetTextFont(42);
   ent_Sigmapp->SetLineColor(5);
   ent_Sigmapp->SetMarkerColor(1);
 
-  legendSigma->Draw("same");
+  if(PadNum==0 || PadNum==1) legendSigma->Draw("same");
 
   gSigmasyst->SetFillColor(0);
   gSigmasyst->SetFillStyle(0);
-  
-  //hSigmapPbStat->Draw("same");
   gSigmasyst->SetFillColor(0);
   gSigmasyst->SetFillStyle(0);
   gSigmasyst->Draw("2same");
@@ -304,33 +288,41 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
   d->SetFillColor(0);
   d->Draw();
   
-  if(PadNum==0 || PadNum==1){
-    legendSigma->Draw("same");
-    
-    TLatex * tlatex1=new TLatex(0.21,0.88801268,"CMS");
-    tlatex1->SetNDC();
-    tlatex1->SetTextColor(1);
-    tlatex1->SetTextFont(42);
-    tlatex1->SetTextSize(0.045);
-    tlatex1->Draw();
-    
-    //TLatex * tlatexlumi=new TLatex(0.471371,0.88801268,"L = 34.8 nb^{-1} (pPb 5.02 TeV)");
-    TLatex * tlatexlumi=new TLatex(0.471371,0.88801268,"34.6 nb^{-1} (pPb 5.02 TeV)");
-
-    tlatexlumi->SetNDC();
-    tlatexlumi->SetTextColor(1);
-    tlatexlumi->SetTextFont(42);
-    tlatexlumi->SetTextSize(0.045);
-    tlatexlumi->Draw();
-  }
-
-  double xpos=0.8528226;
-  double ypos=0.6849894;
+  if(PadNum==0 || PadNum==1)
+    {
+      legendSigma->Draw("same");
+      
+      TLatex * tlatex1=new TLatex(0.21,0.88801268,"CMS");
+      tlatex1->SetNDC();
+      tlatex1->SetTextColor(1);
+      tlatex1->SetTextFont(42);
+      tlatex1->SetTextSize(0.045);
+      tlatex1->Draw();
+      
+      //TLatex * tlatexlumi=new TLatex(0.471371,0.88801268,"L = 34.8 nb^{-1} (pPb 5.02 TeV)");
+      TLatex * tlatexlumi=new TLatex(0.471371,0.88801268,"34.6 nb^{-1} (pPb 5.02 TeV) B^{+}");
+      
+      tlatexlumi->SetNDC();
+      tlatexlumi->SetTextColor(1);
+      tlatexlumi->SetTextFont(42);
+      tlatexlumi->SetTextSize(0.045);
+      tlatexlumi->Draw();
+    }
   
+  double xpos,ypos;
+  if(fofrom=="5020GeV")
+    {
+      xpos=0.7028226;
+      ypos=0.8249894;
+    }
+  else if(fofrom=="7TeV" || fofrom=="2760GeV")
+    {
+      xpos=0.2528226;
+      ypos=0.8249894;
+    }
   TString mypar;
-  if(particle=="Bplus") mypar="B^{+}";
-  if(particle=="Bzero") mypar="B^{0}";
-  if(particle=="Bs") mypar="B_{s}^{0}";  
+  if(fofrom=="7TeV"||fofrom=="2760GeV") mypar=Form("Data driven by %s",fofrom.Data());
+  else if(fofrom=="5020GeV") mypar="FONLL";
   
   TLatex * tlatex3=new TLatex(xpos,ypos,mypar.Data());
   tlatex3->SetNDC();
@@ -384,11 +376,11 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
   legendRpA->SetTextFont(42);
   legendRpA->SetTextSize(0.045);
 
-  hempty=new TH2F("hempty","",10,0.1, 62. ,10.,0.,2.5);  
+  hempty=new TH2F("hempty","",10,0.1, 62. ,10.,0.,3.5);  
   hempty->GetXaxis()->CenterTitle();
   hempty->GetYaxis()->CenterTitle();
   hempty->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  hempty->GetYaxis()->SetTitle("R^{FONLL}_{pA}");
+  hempty->GetYaxis()->SetTitle("R_{pA}");
   hempty->GetXaxis()->SetTitleOffset(1.3);
   hempty->GetYaxis()->SetTitleOffset(1.1);
   hempty->GetXaxis()->SetTitleSize(0.055);
@@ -428,7 +420,7 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
   b->SetFillColor(kGray);
   b->Draw();
 
-  TLegendEntry *ent_RpAstat=legendRpA->AddEntry(gRpAstat,"R^{FONLL}_{pA}","pf");
+  TLegendEntry *ent_RpAstat=legendRpA->AddEntry(gRpAstat,"R_{pA}","pf");
   ent_RpAstat->SetTextFont(42);
   ent_RpAstat->SetLineColor(2);
   ent_RpAstat->SetMarkerColor(2);
@@ -438,7 +430,7 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
   ent_RpAsystData->SetLineColor(2);
   ent_RpAsystData->SetMarkerColor(2);
   
-  TLegendEntry *ent_RpAsystFONLL=legendRpA->AddEntry(gRpAsystFONLL,"Syst. err. from FONLL pp ref.","f");
+  TLegendEntry *ent_RpAsystFONLL=legendRpA->AddEntry(gRpAsystFONLL,"Syst. err. from pp ref.","f");
   ent_RpAsystFONLL->SetTextFont(42);
   ent_RpAsystFONLL->SetLineColor(5);
   ent_RpAsystFONLL->SetLineStyle(1);
@@ -455,7 +447,7 @@ void NuclearModification(TString fofrom, TCanvas *canvasSigma, TCanvas *canvasRp
     tlatex4->Draw();
     
     //TLatex * tlatex2=new TLatex(0.471371,0.88801268,"L = 34.8 nb^{-1} (pPb 5.02 TeV)");
-    TLatex * tlatex2=new TLatex(0.471371,0.88801268,"34.6 nb^{-1} (pPb 5.02 TeV)");
+    TLatex * tlatex2=new TLatex(0.471371,0.88801268,"34.6 nb^{-1} (pPb 5.02 TeV) B^{+}");
 
     tlatex2->SetNDC();
     tlatex2->SetTextColor(1);
