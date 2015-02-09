@@ -22,30 +22,32 @@ After running, you can get the results for the case of
 
 * usage : root -l -b -q 'Bplusdsigmadpt_all.cc+(5)' 
 * optional parameters 
-  1. beam energy : 5(5TeV), 7(7TeV), 2(2.76TeV) 
+  1. beam energy and different PDFs(default : CTEQ6.6): 5(5TeV), 7(7TeV), 2(2.76TeV), 71(7TeV, PDF : MSTW2008nlo68cl), 72(7TeV, PDF : NNPDF30nlo_as0118)  
   2. is it with analysis binning or not(bin width : 1GeV) : true(analysis binned), false(fine binned)
+  3. which analysis binning will be applied? : 0(pPb binning - 10~60 GeV), 1(CMS pp binning - 5~30 GeV), 2(ATLAS pp binning - 9~120 GeV) 
 * resulted file 
-	* ../ResultsBplus/outputBplus_Unbinned(Binned)_5TeV(7TeV, 2760GeV).root
+	* ../ResultsBplus/outputBplus_Unbinned(BinnedpPb,BinnedCMS,BinnedATL)_5TeV(7TeV, 2760GeV,7TeV_MSTW2008nlo68cl,7TeV_NNPDF30nlo_as0118).root
 
 2. Calculate the ratio of FONLL expectation (A vs. B) with our binning and related systematics
 
-* usage : root -l -b -q 'CompFONLL_Bplusdsigmadpt.cc+(1,0,0,1)';root -l -b -q 'CompFONLL_BplusdsigmadptUnbinned.cc+(1,1,0,1)'
+* usage : root -l -b -q 'CompFONLL_Bplusdsigmadpt.cc+(0,0,0,1)';root -l -b -q 'CompFONLL_BplusdsigmadptUnbinned.cc+(0,1,0,1)'
 * optional parameters 
-  1. isBinned(default:0) : binned with our analysis binning(1) or with 1GeV fine binning(0)
+  1. isBinned(default:0) : binned with our analysis binning(0), CMS pp binning(1), ATLAS pp binning(2). Except these, with 1GeV fine binning(set as 99)
   2. isNorm(default:1) : normalized by central value(1) or central value itself(0)
-  3. What is numerator? : 5TeV(0), 7TeV(1), 2.76TeV(2) 
-  4. What is denominator? : 5TeV(0), 7TeV(1), 2.76TeV(2) 
+  3. What is numerator? : 5TeV(0), 7TeV(1), 2.76TeV(2), 71(7TeV, PDF : MSTW2008nlo68cl), 72(7TeV, PDF : NNPDF30nlo_as0118) 
+  4. What is denominator? : 5TeV(0), 7TeV(1), 2.76TeV(2), 71(7TeV, PDF : MSTW2008nlo68cl), 72(7TeV, PDF : NNPDF30nlo_as0118) 
 * resulted file
-	* ../ResultsBplus/CompFONLL_Bplus_Binned(Fine)_Val(Norm)_5TeV(7TeV,2760GeV)vs7TeV(5TeV,2760GeV).root
-	* ../ResultsBplus/CompFONLL_Bplus_Binned(Unbinned)_Val(Norm)_5TeV(7TeV,2760GeV)vs7TeV(5TeV,2760GeV).pdf - Ratio itself or relative errors from FONLL comparison
+	* ../ResultsBplus/CompFONLL_Bplus_(BinnedpPb,BinnedCMS,BinnedATL,Fine)_Val(Norm)_5TeV(7TeV,2760GeV,7TeV_MSTW2008nlo68cl,7TeV_NNPDF30nlo_as0118)vs7TeV(5TeV,2760GeV,7TeV_MSTW2008nlo68cl,7TeV_NNPDF30nlo_as0118).root
+	* ../ResultsBplus/CompFONLL_Bplus_(BinnedpPb,BinnedCMS,BinnedATL,Fine)_Val(Norm)_5TeV(7TeV,2760GeV,7TeV_MSTW2008nlo68cl,7TeV_NNPDF30nlo_as0118)vs7
+TeV(5TeV,2760GeV,7TeV_MSTW2008nlo68cl,7TeV_NNPDF30nlo_as0118).pdf - Ratio itself or relative errors from FONLL comparison
 	 and valuesvalues to check! - save as histogram in root file 
 * example in stored information in root file
-  1. CompFONLL_Bplus_Binned_Val_7TeVvs2760GeV.root - with (1,0) : central value 
+  1. CompFONLL_Bplus_pPbBinned_Val_7TeVvs2760GeV.root - with (0,0) : central value 
 	**0.664924**+0.0171475-0.0126994 
 
 	**0.631362**+0.013487-0.0108966 
 
-  2. CompFONLL_Bplus_Binned_Norm_7TeVvs2760GeV.root - with (1,1) : check plus minus error 
+  2. CompFONLL_Bplus_pPbBinned_Norm_7TeVvs2760GeV.root - with (0,1) : check plus minus error 
 	1+**0.0257887**-**0.019099** 
 
 	1+**0.0213618**-**0.0172589** 
