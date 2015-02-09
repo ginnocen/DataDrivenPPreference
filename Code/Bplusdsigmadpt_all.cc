@@ -20,7 +20,7 @@
 #define HMIN 5   
 #define HMAX 120    
 
-#define REBIN_bin0 6	// CMS pPb pt bin
+#define REBIN_bin0 5	// CMS pPb pt bin
 #define REBIN_bin1 5	// CMS pp pt bin
 #define REBIN_bin2 8	// ATLAS pp pt bin
 #define REBIN 55			// For 5~60, bin width : 1 GeV     
@@ -138,7 +138,7 @@ void Bplusdsigmadpt_all(int option=5, bool isBinned=true, int bincase=0)
 	// REBIN here
 
 	//double rebiny[6] = {10,15,20,25,30,60};//rebin edge
-	double rebiny[REBIN_bin0+1]		  = {5.,10.,15.,20.,25.,30.,60.};//rebin edge for CMS pPb binning
+	double rebiny[REBIN_bin0+1]		  = {10.,15.,20.,25.,30.,60.};//rebin edge for CMS pPb binning
 	double rebiny_CMS[REBIN_bin1+1] = {5.,10.,13.,17.,24.,30.};//rebin edge for CMS pp binning
 	double rebiny_ATL[REBIN_bin2+1] = {9.,13.,16.,20.,25.,35.,50.,70.,120.};//rebin edge for ATLAS pp binning
 
