@@ -286,7 +286,7 @@ void Comp_dsigma(int option){
 
 	//canvasRref->SaveAs("../ResultsBplus/hRcomp_Comp5TeV.pdf");
 	canvasRref->SaveAs(Form("../ResultsBplus/hRcomp_Comp%s.pdf",rmk.c_str()));
-	hemptyCR->GetYaxis()->SetTitle("Ratio of data+FONLL / FONLL");
+	hemptyCR->GetYaxis()->SetTitle("Ratio");
 	hemptyCR->Draw();
 	hR12->Draw("samee2");
 	//hR31->Draw("samee2");
@@ -295,7 +295,11 @@ void Comp_dsigma(int option){
 	//hR31->Draw("samep");
 	//hR32->Draw("samep");
 	l2->Draw();
-	//legendSigmaC->Draw("");
+	legendSigmaC->DeleteEntry();
+	legendSigmaC->DeleteEntry();
+	legendSigmaC->DeleteEntry();
+	legendSigmaC->AddEntry(hR12,"data+FONLL/FONLL","pf");
+	legendSigmaC->Draw("");
 	//canvasRref->SaveAs("../ResultsBplus/hRcomp_Comp5TeV.pdf");
 	canvasRref->SaveAs(Form("../ResultsBplus/hRcomp_Comp%s_s1.pdf",rmk.c_str()));
 
@@ -309,6 +313,8 @@ void Comp_dsigma(int option){
 	hR32->Draw("samep");
 	l2->Draw();
 	legendSigmaC->DeleteEntry();
+	legendSigmaC->AddEntry(hR31,"R_{pPb}^{data+FONLL}","pf");
+	legendSigmaC->AddEntry(hR32,"R_{pPb}^{FONLL}","pf");
 	legendSigmaC->Draw("");
 	//canvasRref->SaveAs("../ResultsBplus/hRcomp_Comp5TeV.pdf");
 	canvasRref->SaveAs(Form("../ResultsBplus/hRcomp_Comp%s_s2.pdf",rmk.c_str()));

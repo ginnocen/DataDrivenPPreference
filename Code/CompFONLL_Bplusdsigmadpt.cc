@@ -7,10 +7,15 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 
-#define BIN_NUM 220
-#define HMIN 5//10
-#define HMAX 60
-#define REBIN 6
+#define BIN_NUM 460   // 5~120 GeV, interval : 0.25 GeV
+
+#define HMIN 5   
+#define HMAX 120    
+
+#define REBIN_bin0 6  // CMS pPb pt bin
+#define REBIN_bin1 5  // CMS pp pt bin
+#define REBIN_bin2 8  // ATLAS pp pt bin
+#define REBIN 55      // For 5~60, bin width : 1 GeV     
 
 void CompFONLL_Bplusdsigmadpt(int isBinned=0,int isNorm=1, int codeNum=1, int codeDen=2){
 
@@ -25,22 +30,36 @@ void CompFONLL_Bplusdsigmadpt(int isBinned=0,int isNorm=1, int codeNum=1, int co
 	//gStyle->SetTitleOffset(0.9,"X");
 	//gStyle->SetTitleOffset(5.0,"Y");
 
-	TFile* fin_name[3];
+	TFile* fin_name[5];
+	/*
+	fin_name[0]=new TFile("../ResultsBplus/outputBplus_Unbinned_5TeV.root");
+	fin_name[1]=new TFile("../ResultsBplus/outputBplus_Unbinned_7TeV.root");
+	fin_name[2]=new TFile("../ResultsBplus/outputBplus_Unbinned_2760GeV.root");
+	*/
 	fin_name[0]=new TFile("../CodeOrg/Rootf/outputBplus_pp_pt_rap24_5p02TeV_PPbBin.root");
 	fin_name[1]=new TFile("../CodeOrg/Rootf/outputBplus_pp_pt_rap24_7TeV_PPbBin.root");
 	fin_name[2]=new TFile("../CodeOrg/Rootf/outputBplus_pp_pt_rap24_2p76TeV_PPbBin.root");
+	fin_name[3]=new TFile("../ResultsBplus/outputBplus_Unbinned_7TeV_MSTW2008nlo68cl.root");
+	fin_name[4]=new TFile("../ResultsBplus/outputBplus_Unbinned_7TeV_NNPDF30nlo_as0118.root");
 
+	std::string codeName[5]={"5TeV","7TeV","2760GeV","7TeV_MSTW2008nlo68cl","7TeV_NNPDF30nlo_as0118"};
 
-	std::string codeName[3]={"5TeV","7TeV","2760GeV"};
+	int REBINn;
+
+	std::string tlatexrem;
 
 	TFile* fin_5TeV = fin_name[codeNum];
 	TFile* fin_7TeV = fin_name[codeDen];
 
-	std::string isBinnedst, isNormst;
-	if (isBinned) isBinnedst="Binned"; else isBinnedst="Fine";
+	std::string isBinnedrmk, isNormst;
+		if (isBinned==0) {isBinnedrmk="BinnedpPb";REBINn=REBIN_bin0;}
+		else if (isBinned==1) {isBinnedrmk="BinnedCMS";REBINn=REBIN_bin1;}
+		else if (isBinned==2) {isBinnedrmk="BinnedATL";REBINn=REBIN_bin2;}
+		else {isBinnedrmk="Fine";REBINn=BIN_NUM;isBinned=99;}//5~60, 1 GeV interval
 	if (isNorm) isNormst="Norm"; else isNormst="Val";
 
-	TFile* fout = new TFile(Form("../ResultsBplus/CompFONLL_Bplus_%s_%s_%svs%s.root",isBinnedst.c_str(),isNormst.c_str(),codeName[codeNum].c_str(),codeName[codeDen].c_str()),"recreate");
+	std::cout << "isBinned : " << isBinned << std::endl;
+	TFile* fout = new TFile(Form("../ResultsBplus/CompFONLL_Bplus_%s_%s_%svs%s.root",isBinnedrmk.c_str(),isNormst.c_str(),codeName[codeNum].c_str(),codeName[codeDen].c_str()),"recreate");
 
 	TH1D* hfr_10_10_5TeV=(TH1D*)fin_5TeV->Get("hpt");
 	TH1D* hfr_05_05_5TeV=(TH1D*)fin_5TeV->Get("hfr_05_05");
@@ -74,25 +93,38 @@ void CompFONLL_Bplusdsigmadpt(int isBinned=0,int isNorm=1, int codeNum=1, int co
 	hfr_10_05_7TeV->SetName("hfr_10_05_7TeV");
 	hfr_05_10_7TeV->SetName("hfr_05_10_7TeV");
 
+  // REBIN here
 
-	double rebin[REBIN+1] = {5.0,10.0,15.0,20.0,25.0,30.0,60.0};
+  //double rebiny[6] = {10,15,20,25,30,60};//rebin edge
+  double rebiny[REBIN_bin0+1]     = {5.,10.,15.,20.,25.,30.,60.};//rebin edge for CMS pPb binning
+  double rebiny_CMS[REBIN_bin1+1] = {5.,10.,13.,17.,24.,30.};//rebin edge for CMS pp binning
+  double rebiny_ATL[REBIN_bin2+1] = {9.,13.,16.,20.,25.,35.,50.,70.,120.};//rebin edge for ATLAS pp binning
 
-	if (isBinned==1) {
-		hfr_10_10_5TeV=(TH1D*)hfr_10_10_5TeV->Rebin(REBIN,"hfr_10_10_5TeV",rebin);
-		hfr_05_05_5TeV=(TH1D*)hfr_05_05_5TeV->Rebin(REBIN,"hfr_05_05_5TeV",rebin);
-		hfr_20_20_5TeV=(TH1D*)hfr_20_20_5TeV->Rebin(REBIN,"hfr_20_20_5TeV",rebin);
-		hfr_20_10_5TeV=(TH1D*)hfr_20_10_5TeV->Rebin(REBIN,"hfr_20_10_5TeV",rebin);
-		hfr_10_20_5TeV=(TH1D*)hfr_10_20_5TeV->Rebin(REBIN,"hfr_10_20_5TeV",rebin);
-		hfr_10_05_5TeV=(TH1D*)hfr_10_05_5TeV->Rebin(REBIN,"hfr_10_05_5TeV",rebin);
-		hfr_05_10_5TeV=(TH1D*)hfr_05_10_5TeV->Rebin(REBIN,"hfr_05_10_5TeV",rebin);
+	double rebin[REBINn+1];
 
-		hfr_10_10_7TeV=(TH1D*)hfr_10_10_7TeV->Rebin(REBIN,"hfr_10_10_7TeV",rebin);
-		hfr_05_05_7TeV=(TH1D*)hfr_05_05_7TeV->Rebin(REBIN,"hfr_05_05_7TeV",rebin);
-		hfr_20_20_7TeV=(TH1D*)hfr_20_20_7TeV->Rebin(REBIN,"hfr_20_20_7TeV",rebin);
-		hfr_20_10_7TeV=(TH1D*)hfr_20_10_7TeV->Rebin(REBIN,"hfr_20_10_7TeV",rebin);
-		hfr_10_20_7TeV=(TH1D*)hfr_10_20_7TeV->Rebin(REBIN,"hfr_10_20_7TeV",rebin);
-		hfr_10_05_7TeV=(TH1D*)hfr_10_05_7TeV->Rebin(REBIN,"hfr_10_05_7TeV",rebin);
-		hfr_05_10_7TeV=(TH1D*)hfr_05_10_7TeV->Rebin(REBIN,"hfr_05_10_7TeV",rebin);
+		if (isBinned==0) {for (int i=0;i<REBIN_bin0+1;i++) {rebin[i]=rebiny[i];}}
+		else if (isBinned==1) {for (int i=0;i<REBIN_bin1+1;i++) {rebin[i]=rebiny_CMS[i];}}
+		else if (isBinned==2) {for (int i=0;i<REBIN_bin2+1;i++) {rebin[i]=rebiny_ATL[i];}}
+	  //else {for (int i=0;i<REBIN+1;i++) {rebin[i]=5.0+i*1.0;}}
+
+	std::cout << "##### REBINn" << REBINn << std::endl;
+
+	if (isBinned!=99) {
+		hfr_10_10_5TeV=(TH1D*)hfr_10_10_5TeV->Rebin(REBINn,"hfr_10_10_5TeV",rebin);
+		hfr_05_05_5TeV=(TH1D*)hfr_05_05_5TeV->Rebin(REBINn,"hfr_05_05_5TeV",rebin);
+		hfr_20_20_5TeV=(TH1D*)hfr_20_20_5TeV->Rebin(REBINn,"hfr_20_20_5TeV",rebin);
+		hfr_20_10_5TeV=(TH1D*)hfr_20_10_5TeV->Rebin(REBINn,"hfr_20_10_5TeV",rebin);
+		hfr_10_20_5TeV=(TH1D*)hfr_10_20_5TeV->Rebin(REBINn,"hfr_10_20_5TeV",rebin);
+		hfr_10_05_5TeV=(TH1D*)hfr_10_05_5TeV->Rebin(REBINn,"hfr_10_05_5TeV",rebin);
+		hfr_05_10_5TeV=(TH1D*)hfr_05_10_5TeV->Rebin(REBINn,"hfr_05_10_5TeV",rebin);
+
+		hfr_10_10_7TeV=(TH1D*)hfr_10_10_7TeV->Rebin(REBINn,"hfr_10_10_7TeV",rebin);
+		hfr_05_05_7TeV=(TH1D*)hfr_05_05_7TeV->Rebin(REBINn,"hfr_05_05_7TeV",rebin);
+		hfr_20_20_7TeV=(TH1D*)hfr_20_20_7TeV->Rebin(REBINn,"hfr_20_20_7TeV",rebin);
+		hfr_20_10_7TeV=(TH1D*)hfr_20_10_7TeV->Rebin(REBINn,"hfr_20_10_7TeV",rebin);
+		hfr_10_20_7TeV=(TH1D*)hfr_10_20_7TeV->Rebin(REBINn,"hfr_10_20_7TeV",rebin);
+		hfr_10_05_7TeV=(TH1D*)hfr_10_05_7TeV->Rebin(REBINn,"hfr_10_05_7TeV",rebin);
+		hfr_05_10_7TeV=(TH1D*)hfr_05_10_7TeV->Rebin(REBINn,"hfr_05_10_7TeV",rebin);
 	}
 
 
@@ -182,7 +214,7 @@ void CompFONLL_Bplusdsigmadpt(int isBinned=0,int isNorm=1, int codeNum=1, int co
 	hfrmaxerr->SetName("hfrmaxerr");
 	hfrminerr->SetName("hfrminerr");
 
-	for (int i=1;i<REBIN+1;i++) {
+	for (int i=1;i<REBINn+1;i++) {
 		double maxbinv,minbinv;
 		maxbinv = max(hfr_10_10_Comp->GetBinContent(i),max(hfr_05_05_Comp->GetBinContent(i),max(hfr_20_20_Comp->GetBinContent(i),max(hfr_20_10_Comp->GetBinContent(i),max(hfr_10_20_Comp->GetBinContent(i),max(hfr_10_05_Comp->GetBinContent(i),hfr_05_10_Comp->GetBinContent(i)))))));
 		minbinv = min(hfr_10_10_Comp->GetBinContent(i),min(hfr_05_05_Comp->GetBinContent(i),min(hfr_20_20_Comp->GetBinContent(i),min(hfr_20_10_Comp->GetBinContent(i),min(hfr_10_20_Comp->GetBinContent(i),min(hfr_10_05_Comp->GetBinContent(i),hfr_05_10_Comp->GetBinContent(i)))))));
@@ -260,9 +292,9 @@ void CompFONLL_Bplusdsigmadpt(int isBinned=0,int isNorm=1, int codeNum=1, int co
 
 	leg->Draw("");
 
-  if (isBinned==1) {
-    if (isNorm==1) c1->SaveAs(Form("../ResultsBplus/CompFONLL_Bplus_Binned_Norm_%svs%s.pdf",codeName[codeNum].c_str(),codeName[codeDen].c_str()));
-    else c1->SaveAs(Form("../ResultsBplus/CompFONLL_Bplus_Binned_Val_%svs%s.pdf",codeName[codeNum].c_str(),codeName[codeDen].c_str()));
+  if (isBinned!=99) {
+    if (isNorm==1) c1->SaveAs(Form("../ResultsBplus/CompFONLL_Bplus_%s_Norm_%svs%s.pdf",isBinnedrmk.c_str(),codeName[codeNum].c_str(),codeName[codeDen].c_str()));
+    else c1->SaveAs(Form("../ResultsBplus/CompFONLL_Bplus_%s_Val_%svs%s.pdf",isBinnedrmk.c_str(),codeName[codeNum].c_str(),codeName[codeDen].c_str()));
   }
   else {
     if (isNorm==1) c1->SaveAs(Form("../ResultsBplus/CompFONLL_Bplus_Unbinned_Norm_%svs%s.pdf",codeName[codeNum].c_str(),codeName[codeDen].c_str()));
